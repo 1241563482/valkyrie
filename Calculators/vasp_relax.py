@@ -8,18 +8,9 @@ Created on Sun Nov 12 13:08:07 2023
 import os, shutil, sys
 from Input import input_vasp_potcar, input_vasp_relax
 from Input import get_info
-from Calculators import sub_job
+from Calculators import job
 from ase.io import read
 
-
-def sub(q, n, comment, not_sub):
-    # Check sub
-    sub_job.control_job(q, n, comment)
-    if not_sub == True:
-        print("<=> Valkyrie: Only generate input file.")
-    else:
-        sub_job.sub("job")
-    return 0
 
 def relax(args, __shell__, __python__, __work__):
     ##### Start Parameters #####
@@ -66,11 +57,16 @@ def relax(args, __shell__, __python__, __work__):
     encut = get_info.get_encut(args.encut)
     # INCAR
     input_vasp_relax.relax(encut, pressure, spin, fd, u_atom, u_value, lmaxmix)
-    # job
-    shutil.copy2("{}/job_relax".format(__shell__), "job")
 
-    # Sub job
-    sub(q, n, comment, not_sub)
+    # Job and Sub
+    job.gen_job("job", "{}/job_relax".format(__shell__))
+    job.control_job(q, n, comment)
+    if not_sub == True:
+        print("<=> Valkyrie: Only generate input file.")
+    else:
+        job.sub("job")
+
+    
     print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
         .format(poscar, pressure, encut, pot))
 

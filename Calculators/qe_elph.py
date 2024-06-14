@@ -1,7 +1,7 @@
 from ase.io import read, write
 from Input import poscar2qe, input_qe_elph
 from Input import input_qe_pot
-from Calculators import sub_job
+from Calculators import job
 
 
 def elph(args, __shell__, __python__, __work__):
@@ -34,10 +34,10 @@ def elph(args, __shell__, __python__, __work__):
 
     # Sub job
     if not_sub == True:
-        sub_job.control_job(q, n, comment)
+        job.control_job(q, n, comment)
         print("<=> Valkyrie: Only generate input file.")
     else:
-        sub_job.control_job(q, n, comment)
-        sub_job.sub("job")
+        job.control_job(q, n, comment)
+        job.sub("job")
         print("<=> Valkyrie: Running ELPH ... ...")
 

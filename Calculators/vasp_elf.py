@@ -1,17 +1,9 @@
 import os, platform, shutil, sys
 from Input import input_vasp_potcar, input_vasp_elf
 from Input import get_info
-from Calculators import sub_job
+from Calculators import job
 from ase.io import read
 
-def sub(q, n, comment, not_sub):
-    # Check sub
-    sub_job.control_job(q, n, comment)
-    if not_sub == True:
-        print("<=> Valkyrie: Only generate input file.")
-    else:
-        sub_job.sub("job")
-    return 0
 
 def elf(args, __shell__, __python__, __work__):
     ##### Start Parameters #####
@@ -60,8 +52,15 @@ def elf(args, __shell__, __python__, __work__):
     # job
     shutil.copy2("{}/job_elf".format(__shell__), "job")
     shutil.copy2("{}/vasp_elf_electride.py".format(__python__), "vasp_elf_electride.py")
-    # Sub job
-    sub(q, n, comment, not_sub)
+
+    # Job and Sub
+    job.gen_job("job", "{}/job_scf".format(__shell__))
+    job.control_job(q, n, comment)
+    if not_sub == True:
+        print("<=> Valkyrie: Only generate input file.")
+    else:
+        job.sub("job")
+
     print("<=> Valkyrie: ELF for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
         .format(poscar, pressure, encut, pot))
 

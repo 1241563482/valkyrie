@@ -9,17 +9,10 @@ import os, platform, shutil, sys
 from Input import input_vasp_band, input_vasp_potcar
 from Input import input_vasp_kpoints, input_vasp_scf
 from Input import get_info
-from Calculators import sub_job
+from Calculators import job
 from ase.io import read
 
-def sub(q, n, comment, not_sub):
-    # Check sub
-    sub_job.control_job(q, n, comment)
-    if not_sub == True:
-        print("<=> Valkyrie: Only generate input file.")
-    else:
-        sub_job.sub("job")
-    return 0
+
 
 def band(args, __shell__, __python__, __work__):
     ##### Start Parameters #####
@@ -82,9 +75,17 @@ def band(args, __shell__, __python__, __work__):
         input_vasp_kpoints.kpoints(numbers[1], numbers[2], numbers[3])
         os.rename("KPOINTS", "KPOINTS-scf")
         os.system("sed -i 's/KSPACING/#KSPACING/g' INCAR-scf")
-    # Sub job
-    sub(q, n, comment, not_sub)
+    
+    # Job and Sub
+    job.gen_job("job", "{}/job_band".format(__shell__))
+    job.control_job(q, n, comment)
+    if not_sub == True:
+        print("<=> Valkyrie: Only generate input file.")
+    else:
+        job.sub("job")
+    
     print("<=> Valkyrie: Running band for {}, ENCUT = {}, POTCAR = {}, fun = {}.".format(poscar, encut, pot, fun))
     os.system("rm -f Brillouin_Zone_3D.jpg INCAR PLOT.in SYMMETRY PRIMCELL.vasp")
     return 0
+
 

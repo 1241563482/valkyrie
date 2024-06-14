@@ -9,17 +9,10 @@ import os, platform, shutil, sys
 from Input import input_vasp_potcar, input_vasp_ph
 from Input import input_vasp_kpoints
 from Input import get_info
-from Calculators import sub_job
+from Calculators import job
 from ase.io import read
 
-def sub(q, n, comment, not_sub):
-    # Check sub
-    sub_job.control_job(q, n, comment)
-    if not_sub == True:
-        print("<=> Valkyrie: Only generate input file.")
-    else:
-        os.system("python loop-in.py")
-    return 0
+
 
 def ph(args, __shell__, __python__, __work__):
     ##### Start Parameters #####
@@ -74,13 +67,19 @@ def ph(args, __shell__, __python__, __work__):
     # KPOINTS
     input_vasp_kpoints.kpoints(*kpoints)
     # Other input files
-    shutil.copy2("{}/job_ph".format(__shell__), "job")
     shutil.copy2("{}/get_free_energy.py".format(__python__), "get_free_energy.py")
     shutil.copy2("{}/vasp_ph_loop_in.py".format(__python__), "loop-in.py")
     shutil.copy2("{}/../Calculators/sub_job.py".format(__python__), "sub_job.py")
     shutil.copy2("{}/../set_up.py".format(__python__), "set_up.py")
-    # Sub job
-    sub(q, n, comment, not_sub)
+    
+    # Job and Sub
+    job.gen_job("job", "{}/job_ph".format(__shell__))
+    job.control_job(q, n, comment)
+    if not_sub == True:
+        print("<=> Valkyrie: Only generate input file.")
+    else:
+        os.system("python loop-in.py")
+    
     print("<=> Valkyrie: Ph for {}, ENCUT = {}, POTCAR = {}.".format(poscar, encut, pot))  
     print("<=> Valkyrie: Super cell is {} {} {}. KPOINTS are {} {} {}.".format(*dim, *kpoints))
 

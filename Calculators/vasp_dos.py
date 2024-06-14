@@ -2,17 +2,10 @@ import os, platform, shutil, sys
 from Input import input_vasp_dos, input_vasp_potcar
 from Input import input_vasp_kpoints, input_vasp_scf
 from Input import get_info
-from Calculators import sub_job
+from Calculators import job
 from ase.io import read
 
-def sub(q, n, comment, not_sub):
-    # Check sub
-    sub_job.control_job(q, n, comment)
-    if not_sub == True:
-        print("<=> Valkyrie: Only generate input file.")
-    else:
-        sub_job.sub("job")
-    return 0
+
 
 def dos(args, __shell__, __python__, __work__):
     ##### Start Parameters #####
@@ -65,8 +58,15 @@ def dos(args, __shell__, __python__, __work__):
     # job
     shutil.copy2("{}/job_dos".format(__shell__), "job")
     shutil.copy2("{}/vasp_dos_sum_spd.py".format(__python__), "vasp_dos_sum_spd.py")
-    # Sub job
-    sub(q, n, comment, not_sub)
+
+    # Job and Sub
+    job.gen_job("job", "{}/job_dos".format(__shell__))
+    job.control_job(q, n, comment)
+    if not_sub == True:
+        print("<=> Valkyrie: Only generate input file.")
+    else:
+        job.sub("job")
+
     print("<=> Valkyrie: Running band for {}, ENCUT = {}, POTCAR = {}, fun = {}.".format(poscar, encut, pot, fun))
     os.system("rm -f Brillouin_Zone_3D.jpg INCAR PLOT.in SYMMETRY PRIMCELL.vasp")
     return 0

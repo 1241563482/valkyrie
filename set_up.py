@@ -22,7 +22,7 @@ export I_MPI_FABRICS=shm
 """
 
 
-run_vasp = r"mpirun -np ${LSB_DJOB_NUMPROC} vasp_std"
+__mpirun__ = "mpirun -np \$LSB_DJOB_NUMPROC"   # A \ needs to set before the $
 __work__ = os.getcwd()
 
 
