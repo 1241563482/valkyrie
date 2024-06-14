@@ -1,0 +1,66 @@
+#!/bin/sh
+#BSUB -J reprocess
+#BSUB -n 1
+#BSUB -q cpu1
+
+source activate magus-new
+
+
+q2r.x < q2r.in
+matdyn.x < matdyn.in.dos
+matdyn.x < matdyn.in.freq
+plotband.x < plotband.in
+
+freq_max=`awk 'BEGIN {max = -999999} {if ($2 > max) max = $2} END {print max}' freq.plot`
+freq_max=`echo "scale=6; $freq_max / 33.3 + 5" | bc`
+echo $freq_max
+
+# Read the ph.out_1 file
+awk '/uniform grid of q-points/{flag=1;next} flag{print; if(/^$/) exit}' elph.out_1 | sed '1,2d' > temp.txt
+grep -v '^Eigenvectors' temp.txt > temp2.txt
+readarray -t content < temp2.txt
+rm temp*
+
+# Delete the number
+for i in "${!content[@]}"; do content[$i]=$(echo "${content[$i]}" | sed 's/^[[:blank:]]*[^[:blank:]]*[[:blank:]]*//'); done
+q_points=`for line in "${content[@]}"; do echo "$line"; done`
+N=`echo "$((${#content[@]} - 1))"`
+
+# The elph_inp_lambda part
+for i in `seq 1 1 $N`; do echo elph_dir/elph.inp_lambda.$i >> temp.txt; done
+readarray -t content < temp.txt
+file=`for line in "${content[@]}"; do echo "$line"; done`
+rm temp.txt
+
+# The range of \mu
+for i in `seq 0.10 0.01 0.20`
+do
+cat > lambda.in << !
+$freq_max 0.12 1 ! emax (something more than highest phonon mode in THz), degauss, smearing method 
+$N ! Number of q-points for which EPC is calculated, 
+$q_points
+$file
+$i ! \mu the Coloumb coefficient in the modified
+! Allen-Dynes formula for T_c (via \omega_log)
+!
+lambda.x < lambda.in > lambda.out-$i
+cp alpha2F.dat alpha2F.dat-$i
+done
+
+python qe_alpha2F.py
+sh qe_elph_linewidth.sh
+
+
+
+#rm -f output_*
+#cp ph.out_1 output.ph.pwscf
+#cp elph.out_1 output.elph.pwscf
+#cp scf2.out output.scf.pwscf
+#cd elph_dir
+#for i in `ls elph* | sed 's/elph.inp_lambda.//g'`
+#    do cp elph.inp_lambda.$i ../pwscf.dyn$i.elph.$i
+#done
+#cd ..
+#python /fsa/home/js_zhuyj/software/Python/epw-reprocess/src/main.py
+
+ 

@@ -1,0 +1,27 @@
+#!/bin/sh
+#BSUB -J ELF
+#BSUB -n 12
+#BSUB -q e52692v2ib!
+
+source activate magus-new
+module load ips/2018u4
+export I_MPI_ADJUST_REDUCE=3
+export I_MPI_FABRICS=shm
+
+
+mpirun -np ${LSB_DJOB_NUMPROC} vasp_std
+
+result=`grep NGX OUTCAR | head -1`
+NGX=$(echo "$result" | awk '{print $5}')
+NGX=$(echo "$NGX * 3" | bc)
+NGY=$(echo "$result" | awk '{print $8}')
+NGY=$(echo "$NGY * 3" | bc)
+NGZ=$(echo "$result" | awk '{print $11}')
+NGZ=$(echo "$NGZ * 3" | bc)
+
+echo "NGX = $NGX" >> INCAR
+echo "NGY = $NGY" >> INCAR
+echo "NGZ = $NGZ" >> INCAR
+
+mpirun -np ${LSB_DJOB_NUMPROC} vasp_std
+python vasp_elf_electride.py

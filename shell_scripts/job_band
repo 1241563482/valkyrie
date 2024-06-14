@@ -1,0 +1,20 @@
+#!/bin/sh
+#BSUB -J band
+#BSUB -n 24
+#BSUB -q 9242opa!
+
+module load ips/2018u4
+export I_MPI_ADJUST_REDUCE=3
+export I_MPI_FABRICS=shm
+
+cp INCAR-scf INCAR
+mpirun -np ${LSB_DJOB_NUMPROC} vasp_std
+cp INCAR-band INCAR
+
+cp INCAR-band INCAR
+cp KPATH.in KPOINTS
+mpirun -np ${LSB_DJOB_NUMPROC} vasp_std
+echo -e "211\n1" | vaspkit
+echo -e "213\n1\nall" | vaspkit
+
+rm -f CHG* WAVECAR
