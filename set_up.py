@@ -30,6 +30,9 @@ if platform.system() == "Linux":
     elif host_name == "js_zhuyj":
         __shell__ = "/fsa/home/js_zhuyj/valkyrie/shell_scripts" # To change
         __python__ = "/fsa/home/js_zhuyj/valkyrie/python_scripts" # To change
+    elif host_name == "yijiezhu":
+        __shell__ = "/home/yijiezhu/valkyrie/shell_scripts"
+        __python__ = "/home/yijiezhu/valkyrie/python_scripts"
     __work__ = os.getcwd()
 else:
     __shell__ = os.getcwd() + "\\shell_scripts"
