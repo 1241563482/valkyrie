@@ -1,23 +1,14 @@
-#!/bin/sh
-#BSUB -J band_hse
-#BSUB -n 48
-#BSUB -q 9242opa!
-
-module load ips/2018u4
-export I_MPI_ADJUST_REDUCE=3
-export I_MPI_FABRICS=shm
-
 rm -f CHG* WAVECAR KPOINTS
 
 cp INCAR-scf INCAR
 cp KPOINTS-scf KPOINTS
-mpirun -np ${LSB_DJOB_NUMPROC} vasp_std > scf.out
+MPIRUN vasp_std > scf.out
 cp OSZICAR OSZICAR-scf
 cp OUTCAR OUTCAR-scf
 
 cp INCAR-band INCAR
 cp KPOINTS-band KPOINTS
-mpirun -np ${LSB_DJOB_NUMPROC} vasp_std > band.out
+MPIRUN vasp_std > band.out
 cp OSZICAR OSZICAR-band
 cp OUTCAR OUTCAR-band
 cp vasprun.xml vasprun.xml-band

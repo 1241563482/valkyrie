@@ -1,13 +1,4 @@
-#!/bin/sh
-#BSUB -J scf
-#BSUB -n 48
-#BSUB -q 9242opa!
-
-module load ips/2018u4
-export I_MPI_ADJUST_REDUCE=3
-export I_MPI_FABRICS=shm
-
-mpirun -np ${LSB_DJOB_NUMPROC} pw.x -npool 4 < scf1.in > scf1.out
-mpirun -np ${LSB_DJOB_NUMPROC} pw.x -npool 4 < scf2.in > scf2.out
+MPIRUN pw.x -npool 4 < scf1.in > scf1.out
+MPIRUN pw.x -npool 4 < scf2.in > scf2.out
 sh loop-elph.sh
 
