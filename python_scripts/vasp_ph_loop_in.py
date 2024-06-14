@@ -6,7 +6,7 @@ Created on Fri Dec  8 20:08:20 2023
 """
 
 import os, shutil
-import sub_job
+import job
 
 dir_list = []
 for file in os.listdir():
@@ -25,8 +25,8 @@ for i in dir_list:
     shutil.copy2("../POSCAR-{}".format(i), "POSCAR")
     shutil.copy2("../POTCAR", "POTCAR")
     shutil.copy2("../job", "job")
-    sub_job.control_job(None, None, i)
-    sub_job.sub("job")
+    job.control_job(None, None, i)
+    job.sub("job")
     #os.system("bsub < job")
     os.chdir("../")
     
