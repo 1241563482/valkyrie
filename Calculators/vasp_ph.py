@@ -69,7 +69,7 @@ def ph(args, __shell__, __python__, __work__):
     # Other input files
     shutil.copy2("{}/get_free_energy.py".format(__python__), "get_free_energy.py")
     shutil.copy2("{}/vasp_ph_loop_in.py".format(__python__), "loop-in.py")
-    shutil.copy2("{}/../Calculators/sub_job.py".format(__python__), "sub_job.py")
+    shutil.copy2("{}/../Calculators/job.py".format(__python__), "job.py")
     shutil.copy2("{}/../set_up.py".format(__python__), "set_up.py")
     
     # Job and Sub
