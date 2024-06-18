@@ -1,6 +1,8 @@
 from ase.dft import kpoints
 from ase.io import read
 import shutil
+from Calculators import job
+from set_up import sub_command
 
 def scf1(encut, k, nat, ntyp, cell, pos, pot):
     if k[2] == 1:
@@ -73,12 +75,8 @@ K_POINTS automatic
 
 
 def loop_elph(qmesh, n, q):
-    loop_elph = """
-#!/bin/bash
-sub_job="submit_vasp_$iter.job"
+    loop_elph = """#!/bin/bash
 PREFIX="pwscf"
-TMP_DIR="tmp"
-PH_DIR=""
 
 # q-vectors parallel params.
 nbeg=1
@@ -87,7 +85,7 @@ nqs=8
 for ((iq=$nbeg; iq<=$nqs; ++iq))  
 do
     # create temp dir for each q-vector.
-    phq_tmp=$TMP_DIR/phq_$iq
+    phq_tmp=tmp/phq_$iq
     mkdir -p $phq_tmp
     cd $phq_tmp
     ln -sf  ../$PREFIX.save $PREFIX.save
@@ -116,22 +114,13 @@ do
 /
 EOF
 
-cat > "$iq" << EOF
-#!/bin/bash
-#BSUB -J "$iq"
-#BSUB -n {}
-#BSUB -q {}
-
-module load ips/2018u4
-export I_MPI_ADJUST_REDUCE=3
-export I_MPI_FABRICS=shm
-
-mpiexec.hydra -n {} "ph.x" -npool 4 -i "elph.in_$iq" > "elph.out_$iq"
-rm -rf $phq_tmp
-EOF
-   bsub < $iq
+    cp job-elph job-tmp
+    sed -i "s/NUMBER/$iq/g" job-tmp
+    cat job-tmp
+    {} job-tmp
+    rm -f job-tmp
 done
-""".format(qmesh[0], qmesh[1], qmesh[2], n, q, n)
+""".format(qmesh[0], qmesh[1], qmesh[2], sub_command)
     with open("loop-elph.sh", "w") as file:
         print(loop_elph, file = file)
     print("<=> Valkyrie: Qmesh for elph: {} {} {}".format(qmesh[0], qmesh[1], qmesh[2]))
@@ -218,7 +207,8 @@ freq.ps
     shutil.copy("{}/qe_elph_alpha2F.py".format(__python__), "qe_alpha2F.py")
     shutil.copy("{}/qe_elph_sumlambda.py".format(__python__), "sumlambda.py")
     shutil.copy("{}/qe_elph_linewidth.sh".format(__shell__), "qe_elph_linewidth.sh")
-    shutil.copy("{}/job_qe_elph".format(__shell__), "job")
-    shutil.copy("{}/job_qe_elph_reprocess".format(__shell__), "job-re")
+    job.gen_job("job", "{}/job_qe_elph_1".format(__shell__))
+    job.gen_job("job-elph", "{}/job_qe_elph_2".format(__shell__))
+    job.gen_job("job-re", "{}/job_qe_elph_reprocess".format(__shell__))
 
 

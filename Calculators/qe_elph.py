@@ -2,6 +2,7 @@ from ase.io import read, write
 from Input import poscar2qe, input_qe_elph
 from Input import input_qe_pot
 from Calculators import job
+import shutil
 
 
 def elph(args, __shell__, __python__, __work__):
@@ -12,12 +13,9 @@ def elph(args, __shell__, __python__, __work__):
     k = args.k
     not_sub = args.not_sub
     q = args.q
-    n = args.n
-    comment = args.comment
-    if q == None:
-        q = "9242opa!"
-    if n == None:
-        n = "48"
+    n = 48 if args.n is None else args.n
+    comment = "elph" if args.comment is None else args.comment
+
 
     # Read POSCAR
     ntyp, nat, cell, pos = poscar2qe.read_poscar(poscar)
@@ -31,13 +29,14 @@ def elph(args, __shell__, __python__, __work__):
     input_qe_elph.loop_elph(qmesh, n, q)
     input_qe_elph.matdyn_in(poscar, pot, k)
     input_qe_elph.other_input(__shell__, __python__, __work__)
+    job.control_job("job-elph", q, n, "NUMBER")
+    job.control_job("job-re", q, 1, "reprocess")
 
     # Sub job
+    job.control_job("job", q, n, comment)
     if not_sub == True:
-        job.control_job(q, n, comment)
         print("<=> Valkyrie: Only generate input file.")
     else:
-        job.control_job(q, n, comment)
         job.sub("job")
         print("<=> Valkyrie: Running ELPH ... ...")
 

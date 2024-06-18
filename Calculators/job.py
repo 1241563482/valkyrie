@@ -25,8 +25,8 @@ def sub(job):
     os.system(sub_command + job)
     
 
-def control_job(q, n, comment):
-    with open("job", "r") as file:
+def control_job(job, q, n, comment):
+    with open(job, "r") as file:
         lines = file.readlines()
     line_number = 0
     
@@ -42,10 +42,9 @@ def control_job(q, n, comment):
                 lines[line_number] = node_name_startswith + " " + str(q) + "\n"
         line_number = line_number + 1 
     
-    with open("job", 'w') as file:
+    with open(job, 'w') as file:
         file.writelines(lines)
 
-    
     
 if __name__ == "__main__":
     gen_job("job", "/home/yijiezhu/valkyrie/shell_scripts/job_relax")

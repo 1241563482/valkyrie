@@ -1,11 +1,3 @@
-#!/bin/sh
-#BSUB -J reprocess
-#BSUB -n 1
-#BSUB -q cpu1
-
-source activate magus-new
-
-
 q2r.x < q2r.in
 matdyn.x < matdyn.in.dos
 matdyn.x < matdyn.in.freq

@@ -1,0 +1,3 @@
+
+MPIRUN "ph.x" -npool 4 -i elph.in_NUMBER > elph.out_NUMBER
+rm -rf tmp/phq_NUMBER

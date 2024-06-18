@@ -1,4 +1,6 @@
+
 MPIRUN pw.x -npool 4 < scf1.in > scf1.out
 MPIRUN pw.x -npool 4 < scf2.in > scf2.out
 sh loop-elph.sh
+
 

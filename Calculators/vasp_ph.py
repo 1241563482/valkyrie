@@ -74,7 +74,7 @@ def ph(args, __shell__, __python__, __work__):
     
     # Job and Sub
     job.gen_job("job", "{}/job_ph".format(__shell__))
-    job.control_job(q, n, comment)
+    job.control_job("job", q, n, comment)
     if not_sub == True:
         print("<=> Valkyrie: Only generate input file.")
     else:

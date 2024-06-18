@@ -4,12 +4,12 @@ import subprocess
 comment_startswith = "#BSUB -J" 
 core_number_startswith = "#BSUB -n" 
 node_name_startswith = "#BSUB -q" 
-sub_command = "bsub < "
+sub_command = "bsub <"
 
 
 job_head = """#!/bin/sh
 #BSUB -J ph
-#BSUB -n 12 
+#BSUB -n 12
 #BSUB -q 9242opa!
 """
 
