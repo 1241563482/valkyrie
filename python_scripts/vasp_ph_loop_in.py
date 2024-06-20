@@ -25,7 +25,7 @@ for i in dir_list:
     shutil.copy2("../POSCAR-{}".format(i), "POSCAR")
     shutil.copy2("../POTCAR", "POTCAR")
     shutil.copy2("../job", "job")
-    job.control_job(None, None, i)
+    job.control_job("job", None, None, i)
     job.sub("job")
     #os.system("bsub < job")
     os.chdir("../")
