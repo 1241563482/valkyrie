@@ -9,7 +9,7 @@ Created on Sat Nov 11 14:18:04 2023
 
 from my_parsers import MyParsers
 from Calculators import vasp_relax, vasp_scf, vasp_band, vasp_ph, vasp_dos, vasp_elf
-from Calculators import qe_elph
+from Calculators import qe_elph, qe_relax
 from set_up import __shell__, __python__, __work__
 import os
 
@@ -43,6 +43,8 @@ elif args.command == "ph":
     vasp_ph.ph(args, __shell__, __python__, __work__)    
 elif args.command == "elph":
     qe_elph.elph(args, __shell__, __python__, __work__)
+elif args.command == "qerelax":
+    qe_relax.relax(args, __shell__, __python__, __work__)
 
 
 if args.input != None:

@@ -25,8 +25,8 @@ def ph(args, __shell__, __python__, __work__):
     dim = args.dim
     symmetry = args.symmetry
     q = args.q
-    n = args.n
-    comment = args.comment
+    n = 12 if args.n is None else args.n
+    comment = "ph" if args.comment is None else args.comment
     # Fun and gga+U part
     fun = args.fun
     if fun == "ggau":

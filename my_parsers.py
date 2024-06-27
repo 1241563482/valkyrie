@@ -495,3 +495,41 @@ class MyParsers():
             help = "Only generate the input file, not sub."
         )
         
+
+        # qe_relax
+        self.qerelax_parser = self.subparser.add_parser(
+            "qerelax",
+            help = "Relax by qe.",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        )
+        self.qerelax_parser.add_argument(
+            "-p",
+            "--pressure",
+            type = float,
+            default = 0.0,
+            help = "Pressure"
+        )
+        self.qerelax_parser.add_argument(
+            "--encut",
+            type = int,
+            default = 100,
+            help = "ENCUT (Ry)"
+        )
+        self.qerelax_parser.add_argument(
+            "--spin",
+            action = "store_true",
+            help = "Add spin (default FM)."
+        )
+        self.qerelax_parser.add_argument(
+            "-ns",
+            "--not-sub",
+            action = "store_true",
+            help = "Only generate the input file, not sub."
+        )
+        self.qerelax_parser.add_argument(
+            "-fd",
+            "--fermi-dirac",
+            type = int,
+            default = None,
+            help = "F-D smearing for electron enthalpy."
+        )

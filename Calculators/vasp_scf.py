@@ -13,8 +13,8 @@ def scf(args, __shell__, __python__, __work__):
     not_sub = args.not_sub
     fd = args.fermi_dirac
     q = args.q
-    n = args.n
-    comment = args.comment
+    n = 24 if args.n is None else args.n
+    comment = "scf" if args.comment is None else args.comment
     symmetry = args.symmetry
     # Fun and gga+U part
     fun = args.fun

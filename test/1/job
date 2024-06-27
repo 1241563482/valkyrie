@@ -1,0 +1,15 @@
+#!/bin/sh
+#BSUB -J relax
+#BSUB -n 24
+#BSUB -q 9242opa!
+
+
+source activate magus-new
+module load ips/2018u4
+export I_MPI_ADJUST_REDUCE=3
+export I_MPI_FABRICS=shm
+
+
+mpirun -np $LSB_DJOB_NUMPROC pw.x -npool 4 < relax.in
+
+
