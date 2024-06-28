@@ -3,33 +3,18 @@ from ase.io import read
 import shutil
 from Calculators import job
 
-def relax(pressure: int,
+def scf(pressure: int,
           encut: int,
           k: list,
           nat: int,
           ntyp: int,
           cell: str,
           pos: str,
-          pot: str,
-          optcell: bool):
+          pot: str
+          ):
     
-
-    if optcell == False:
-        CELL = f"""&CELL
-    press = {pressure}  !kbar
-    press_conv_thr = 0.02
-    cell_dynamics = 'bfgs'
-/
-"""
-    else:
-        CELL = f"""&CELL
-    cell_dofree = 2Dxy
-    cell_dynamics = 'bfgs'
-/
-"""
-    
-    relax_in = f"""&CONTROL
-    calculation = 'vc-relax' , prefix = 'pwscf'
+    scf_in = f"""&CONTROL
+    calculation = 'scf' , prefix = 'pwscf'
     pseudo_dir = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
     outdir = './tmp'
     forc_conv_thr = 1.0d-7
@@ -48,7 +33,11 @@ def relax(pressure: int,
 &IONS
     ion_dynamics='bfgs'
 /
-{CELL}
+&CELL
+    press = {pressure}  !kbar
+    press_conv_thr = 0.02
+    cell_dynamics = 'bfgs'
+
 ATOMIC_SPECIES
 {pot}
 K_POINTS automatic
@@ -58,6 +47,6 @@ K_POINTS automatic
 {pos}
 """
 
-    with open("relax.in", "w") as file:
-        print(relax_in, file = file)
-    print("<=> Valkyrie: Kmesh for relax.in: {} {} {}".format(k[0], k[1], k[2]))
+    with open("scf.in", "w") as file:
+        print(scf_in, file = file)
+    print("<=> Valkyrie: Kmesh for scf.in: {} {} {}".format(k[0], k[1], k[2]))

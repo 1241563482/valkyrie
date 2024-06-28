@@ -23,6 +23,7 @@ def relax(args, __shell__, __python__, __work__):
     n = 24 if args.n is None else args.n
     comment = "relax" if args.comment is None else args.comment
     symmetry = args.symmetry
+    optcell = args.optcell
 
     # Fun and gga+U part
     fun = args.fun
@@ -51,24 +52,37 @@ def relax(args, __shell__, __python__, __work__):
     if symmetry != None:
         os.system("phonopy --symmetry --tolerance={} | grep space | head -1".format(symmetry))
         shutil.copy2("PPOSCAR", "POSCAR")
+    
     # POTCAR
     input_vasp_potcar.potcar(pot)
+
     # ENCUT
     encut = get_info.get_encut(args.encut)
+
     # INCAR
-    input_vasp_relax.relax(encut, pressure, spin, fd, u_atom, u_value, lmaxmix)
+    input_vasp_relax.relax(encut, pressure, spin, fd, u_atom, u_value, lmaxmix, optcell)
 
     # Job and Sub
-    job.gen_job("job", "{}/job_relax".format(__shell__))
+    if optcell == False:
+        job.gen_job("job", "{}/job_relax".format(__shell__))
+    else:
+        job.gen_job("job", "{}/job_relax_optcell".format(__shell__))
     job.control_job("job", q, n, comment)
     if not_sub == True:
         print("<=> Valkyrie: Only generate input file.")
     else:
         job.sub("job")
 
-    
-    print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
-        .format(poscar, pressure, encut, pot))
+    # Output
+    if optcell == True:
+        print("<=> Valkyrie: Relax for {} with vasprelax version, ENCUT = {}, POTCAR = {}."\
+            .format(poscar, encut, pot))
+        if pressure != 0.0:
+            print("\033[0;31;40m", "\b<=> WARNING: Pressure and optcell tags can not use together!", "\033[0m")
+            print("\033[0;31;40m", "\b<=> WARNING: The Pressure tag is ignored!", "\033[0m")
+    else:
+        print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
+            .format(poscar, pressure, encut, pot))
 
     return 0
 

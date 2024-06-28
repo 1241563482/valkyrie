@@ -116,6 +116,12 @@ class MyParsers():
             default = None,
             help = "f electron for GGA+U."
         )
+        self.relax_parser.add_argument(
+            "-opt",
+            "--optcell",
+            action = "store_true",
+            help = "Constrained relax."
+        )
         
             
         # scf
@@ -527,6 +533,51 @@ class MyParsers():
             help = "Only generate the input file, not sub."
         )
         self.qerelax_parser.add_argument(
+            "-fd",
+            "--fermi-dirac",
+            type = int,
+            default = None,
+            help = "F-D smearing for electron enthalpy."
+        )
+        self.qerelax_parser.add_argument(
+            "-opt",
+            "--optcell",
+            action = "store_true",
+            help = "Constrained relax."
+        )
+
+
+        # QE scf
+        self.qescf_parser = self.subparser.add_parser(
+            "qescf",
+            help = "Scf by QE.",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        )
+        self.qescf_parser.add_argument(
+            "--encut",
+            type = int,
+            default = 100,
+            help = "ENCUT for QE"
+        )
+        self.qescf_parser.add_argument(
+            "--spin",
+            action = "store_true",
+            help = "Add spin (default FM)."
+        )
+        self.qescf_parser.add_argument(
+            "-ns",
+            "--not-sub",
+            action = "store_true",
+            help = "Only generate the input file, not sub."
+        )
+        self.qescf_parser.add_argument(
+            "-p",
+            "--pressure",
+            type = float,
+            default = 0.0,
+            help = "Pressure"
+        )
+        self.qescf_parser.add_argument(
             "-fd",
             "--fermi-dirac",
             type = int,

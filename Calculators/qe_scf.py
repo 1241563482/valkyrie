@@ -6,14 +6,14 @@ Created on Sun Nov 12 13:08:07 2023
 """
 
 import os, shutil, sys, math
-from Input import input_qe_pot, input_vasp_relax
-from Input import get_info, poscar2qe, input_qe_relax
+from Input import input_qe_pot
+from Input import poscar2qe, input_qe_scf
 from Calculators import job
 from ase.io import read
 import numpy as np
 
 
-def relax(args, __shell__, __python__, __work__):
+def scf(args, __shell__, __python__, __work__):
     ##### Start Parameters #####
     pressure = args.pressure
     spin = args.spin
@@ -23,7 +23,6 @@ def relax(args, __shell__, __python__, __work__):
     n = 24 if args.n is None else args.n
     comment = "relax" if args.comment is None else args.comment
     symmetry = args.symmetry
-    optcell = args.optcell
     ##### End Parameters #####
 
 
@@ -46,11 +45,11 @@ def relax(args, __shell__, __python__, __work__):
     # ENCUT
     encut = args.encut
     # INCAR
-    input_qe_relax.relax(pressure * 10, encut, k, nat, ntyp, cell, pos, pot, optcell)
+    input_qe_scf.scf(pressure * 10, encut, k, nat, ntyp, cell, pos, pot)
     
 
     # Job and Sub
-    job.gen_job("job", "{}/job_qe_relax".format(__shell__))
+    job.gen_job("job", "{}/job_qe_scf".format(__shell__))
     job.control_job("job", q, n, comment)
     if not_sub == True:
         print("<=> Valkyrie: Only generate input file.")
@@ -58,15 +57,8 @@ def relax(args, __shell__, __python__, __work__):
         job.sub("job")
 
     # Output
-    if optcell == True:
-        print("<=> Valkyrie: Relax for {} with cell_dofree, ENCUT = {}, POTCAR = {}."\
-            .format(formula, encut, pot.split()[-1]))
-        if pressure != 0.0:
-            print("\033[0;31;40m", "\b<=> WARNING: Pressure and cell_dofree tags can not use together!", "\033[0m")
-            print("\033[0;31;40m", "\b<=> WARNING: The Pressure tag is ignored!", "\033[0m")
-    else:
-        print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
-            .format(formula, pressure, encut, pot.split()[-1]))
+    print("<=> Valkyrie: Scf for {} under the pressure of {} GPa, ENCUT = {} Ry, POTCAR = {}."\
+        .format(formula, pressure, encut, pot.split()[-1]))
         
     return 0
 
