@@ -19,7 +19,7 @@
     ion_dynamics='bfgs'
 /
 &CELL
-    press = 1000.0  !kbar
+    press = 0.0  !kbar
     press_conv_thr = 0.02
     cell_dynamics = 'bfgs'
 

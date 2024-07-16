@@ -58,26 +58,30 @@ def band(args, __shell__, __python__, __work__):
     # ENCUT
     encut = get_info.get_encut(args.encut)
     # INCAR
-    input_vasp_scf.scf(encut, pressure, spin, fd, fun, u_atom, u_value, lmaxmix)
+    input_vasp_scf.scf(encut, pressure, spin, fd, "gga", u_atom, u_value, lmaxmix)
     os.rename("INCAR", "INCAR-scf")
     input_vasp_band.band(encut, pressure, spin, fd, fun, u_atom, u_value, lmaxmix)
     os.rename("INCAR", "INCAR-band")
+    
+    
     # KPOINTS and job
     if fun == "gga" or fun == "ggau":
         os.system("vaspkit -task 303 > /dev/null 2>&1")
         shutil.copy2("{}/job_band".format(__shell__), "job")
+    
     elif fun == "hse":
-        os.system("vaspkit -task 303 > /dev/null 2>&1")
-        os.system("echo -e '251\n2\n0.04\n0.06' | vaspkit > /dev/null")
+        if not os.path.isfile("KPATH.in"):
+            os.system("vaspkit -task 303 > /dev/null 2>&1") # KPOINTS for gga band
+        os.system("echo -e '251\n2\n0.04\n0.06' | vaspkit > /dev/null") # KPOINTS for hse band
         os.rename("KPOINTS", "KPOINTS-band")
         with open("KPOINTS-band", "r") as file:
             numbers = file.readline().strip().split()
-        input_vasp_kpoints.kpoints(numbers[1], numbers[2], numbers[3])
+        input_vasp_kpoints.kpoints(numbers[1], numbers[2], numbers[3]) # KPOINTS for scf
         os.rename("KPOINTS", "KPOINTS-scf")
         os.system("sed -i 's/KSPACING/#KSPACING/g' INCAR-scf")
+        job.gen_job("job", "{}/job_band_hse".format(__shell__))
     
     # Job and Sub
-    job.gen_job("job", "{}/job_band".format(__shell__))
     job.control_job("job", q, n, comment)
     if not_sub == True:
         print("<=> Valkyrie: Only generate input file.")
