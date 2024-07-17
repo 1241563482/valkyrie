@@ -67,7 +67,7 @@ def band(args, __shell__, __python__, __work__):
     # KPOINTS and job
     if fun == "gga" or fun == "ggau":
         os.system("vaspkit -task 303 > /dev/null 2>&1")
-        shutil.copy2("{}/job_band".format(__shell__), "job")
+        job.gen_job("job", "{}/job_band".format(__shell__))
     
     elif fun == "hse":
         if not os.path.isfile("KPATH.in"):

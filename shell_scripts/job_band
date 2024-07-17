@@ -1,5 +1,5 @@
 cp INCAR-scf INCAR
-cp -f KPOINTS-scf KPOINTS
+#cp -f KPOINTS-scf KPOINTS
 MPIRUN vasp_std
 
 cp INCAR-band INCAR
