@@ -1,0 +1,45 @@
+#!/bin/bash
+#BSUB -J DMFT
+#BSUB -q 7702ib
+#BSUB -n 48
+
+
+source activate magus-new
+module restore dmft
+#export OMP_NUM_THREADS=1
+
+
+rm -f .machines* .lock*
+k=$LSB_HOSTS
+host_array=($k)
+for ((i=0; i<${#host_array[@]}; i++))
+do
+  echo "1:${host_array[$i]}:1" >> .machines
+done
+
+
+init_lapw -b -vxc 5 -numk 1000 -fermit 0.0443
+#sed -i "s/TOT  /FOR  /g" *in2*
+sed -i "/K-VECTORS/c K-VECTORS FROM UNIT:4   -9.0       15    30   emin / de (emax=Ef+de) / nband/" dmft_Te.in*
+run_lapw -p -ec 0.0001 -cc 0.001 -i 90 # -p -it 
+
+
+mkdir dft
+mv * dft
+rm .dstartpara .machine* .lapw* .process*
+
+cd dft
+command=$(python get_command.py)
+$command
+cd ../
+dmft_copy.py dft
+cp ../params.dat .
+szero.py
+
+JOBNAME="dmft"
+mpi_prefix="mpiexec -np ${LSB_DJOB_NUMPROC} -env OMP_NUM_THREADS 1 -envlist SCRATCH,WIEN_DMFT_ROOT,PYTHONPATH,WIENROOT" 
+echo $mpi_prefix > mpi_prefix.dat
+$WIEN_DMFT_ROOT/createDMFprefix.py $JOBNAME.klist mpi_prefix.dat > mpi_prefix.dat2
+$WIEN_DMFT_ROOT/run_dmft.py 
+
+rm -f $JOBNAME.vector*
