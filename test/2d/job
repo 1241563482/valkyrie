@@ -1,0 +1,31 @@
+#!/bin/sh
+#BSUB -J relax
+#BSUB -n 24
+#BSUB -q 9242opa!
+
+
+source activate magus-new
+module load ips/2018u4
+export I_MPI_ADJUST_REDUCE=3
+export I_MPI_FABRICS=shm
+
+# Head and environment and mpirun -np $LSB_DJOB_NUMPROC will auto generate
+mpirun -np $LSB_DJOB_NUMPROC vasprelax
+cp CONTCAR POSCAR
+cp POSCAR POSCAR1
+NN=`grep "in kB" OUTCAR  | wc -l`
+echo "relax 1 calculated with $NN generation" >> log
+for i in `seq 2 10`
+do
+   if [ $NN -gt 5 ]
+   then
+   mpirun -np $LSB_DJOB_NUMPROC vasprelax
+   NN=`grep "in kB" OUTCAR  | wc -l`
+   cp CONTCAR POSCAR
+   cp POSCAR POSCAR$i
+   echo "relax $i calculated with $NN generation" >> log
+   else
+   break
+   fi
+done
+

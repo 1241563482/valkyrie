@@ -38,8 +38,14 @@ def relax(args, __shell__, __python__, __work__):
     ntyp, nat, cell, pos = poscar2qe.read_poscar("POSCAR")
 
     # K points
+    atom_size = [ max(poscar.get_positions()[:,i]) - min(poscar.get_positions()[:,i]) for i in [0, 1, 2] ]
     cell_size = [ np.linalg.norm(poscar.cell[i]) for i in [0, 1, 2] ]
-    k = [ int( max(1, np.ceil(40 / cell_size[i])) ) for i in [0, 1, 2] ]
+    k = []
+    for i in [0, 1, 2]:
+        if cell_size[i] - atom_size[i] >= 8: # If vacuum size >= 8A, then set the K-mesh as 1.
+            k.append(1)
+        else:
+            k.append( int( max(1, np.ceil(40 / cell_size[i]))) )
 
     # POTCAR
     pot = input_qe_pot.get_pot("POSCAR")
@@ -66,7 +72,7 @@ def relax(args, __shell__, __python__, __work__):
             print("\033[0;31;40m", "\b<=> WARNING: The Pressure tag is ignored!", "\033[0m")
     else:
         print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
-            .format(formula, pressure, encut, pot.split()[-1]))
+                .format(formula, pressure, encut, pot.split()[-1]))
         
     return 0
 

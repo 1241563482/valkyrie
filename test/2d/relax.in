@@ -1,0 +1,47 @@
+&CONTROL
+    calculation = 'vc-relax' , prefix = 'pwscf'
+    pseudo_dir = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
+    outdir = './tmp'
+    forc_conv_thr = 1.0d-7
+    etot_conv_thr = 1.0d-7
+/
+&SYSTEM
+    ibrav= 0, nat= 5, ntyp= 3,  
+    occupations = 'smearing', smearing = 'mp', degauss = 0.02
+    ecutwfc = 100
+/
+&ELECTRONS
+    electron_maxstep = 100
+    conv_thr = 1.0d-11
+!    diagonalization = 'cg'
+/
+&IONS
+    ion_dynamics='bfgs'
+/
+&CELL
+    press = 0.0  !kbar
+    press_conv_thr = 0.02
+    cell_dynamics = 'bfgs'
+/
+
+ATOMIC_SPECIES
+V 50.9415 v_pbe_v1.4.uspp.F.UPF
+N 14.0067 N.pbe-n-radius_5.UPF
+O 15.9994 O.pbe-n-kjpaw_psl.0.1.UPF
+
+K_POINTS automatic
+14 14 1 0 0 0
+
+CELL_PARAMETERS angstrom
+3.01720671418460 0.00000000000000 0.00000000000000
+-1.50860335709230 2.61297646824634 0.00000000000000
+0.00000000000000 0.00000000000000 20.00000000000000
+
+ATOMIC_POSITIONS angstrom
+V -0.0000007033 1.7419847029 11.3337177186 
+V 1.5086040577 0.8709917302 8.1864472520 
+N 0.0000000000 0.0000000000 11.9427466825 
+N 0.0000000000 0.0000000000 7.4690581364 
+O -0.0000007033 1.7419847029 9.5274491120 
+
+

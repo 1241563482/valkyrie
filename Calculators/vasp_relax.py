@@ -7,7 +7,7 @@ Created on Sun Nov 12 13:08:07 2023
 
 import os, shutil, sys
 from Input import input_vasp_potcar, input_vasp_relax
-from Input import get_info
+from Input import get_info, input_vasp_kpoints
 from Calculators import job
 from ase.io import read
 
@@ -46,7 +46,8 @@ def relax(args, __shell__, __python__, __work__):
 
 
     # POSCAR
-    poscar = read("POSCAR").get_chemical_formula()
+    poscar = read("POSCAR")
+    chemical_formula = poscar.get_chemical_formula()
     if not os.path.exists("POSCAR"):
         raise Exception("No POSCAR file found at current path.")
     if symmetry != None:
@@ -62,6 +63,11 @@ def relax(args, __shell__, __python__, __work__):
     # INCAR
     input_vasp_relax.relax(encut, pressure, spin, fd, u_atom, u_value, lmaxmix, optcell)
 
+    # KPOINTS
+    if optcell == True:
+        input_vasp_kpoints.kpoints_byhand(poscar)
+        os.system("sed -i 's/KSPACING/#KSPACING/g' INCAR")
+
     # Job and Sub
     if optcell == False:
         job.gen_job("job", "{}/job_relax".format(__shell__))
@@ -76,13 +82,13 @@ def relax(args, __shell__, __python__, __work__):
     # Output
     if optcell == True:
         print("<=> Valkyrie: Relax for {} with vasprelax version, ENCUT = {}, POTCAR = {}."\
-            .format(poscar, encut, pot))
+            .format(chemical_formula, encut, pot))
         if pressure != 0.0:
             print("\033[0;31;40m", "\b<=> WARNING: Pressure and optcell tags can not use together!", "\033[0m")
             print("\033[0;31;40m", "\b<=> WARNING: The Pressure tag is ignored!", "\033[0m")
     else:
         print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
-            .format(poscar, pressure, encut, pot))
+            .format(chemical_formula, pressure, encut, pot))
 
     return 0
 

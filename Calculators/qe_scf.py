@@ -37,10 +37,11 @@ def scf(args, __shell__, __python__, __work__):
     ntyp, nat, cell, pos = poscar2qe.read_poscar("POSCAR")
 
     # K points
-    cell_size = [ max(poscar.get_positions()[:,i]) - min(poscar.get_positions()[:,i]) for i in [0, 1, 2] ]
+    atom_size = [ max(poscar.get_positions()[:,i]) - min(poscar.get_positions()[:,i]) for i in [0, 1, 2] ]
+    cell_size = [ np.linalg.norm(poscar.cell[i]) for i in [0, 1, 2] ]
     k = []
     for i in [0, 1, 2]:
-        if cell_size[i] == 0:
+        if cell_size[i] - atom_size[i] >= 8: # If vacuum size >= 8A, then set the K-mesh as 1.
             k.append(1)
         else:
             k.append( int( max(1, np.ceil(40 / cell_size[i]))) )

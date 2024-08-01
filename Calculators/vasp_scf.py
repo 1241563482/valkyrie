@@ -51,6 +51,7 @@ def scf(args, __shell__, __python__, __work__):
     # INCAR
     input_vasp_scf.scf(encut, pressure, spin, fd, fun, u_atom, u_value, lmaxmix)
 
+
     # Job and Sub
     job.gen_job("job", "{}/job_scf".format(__shell__))
     job.control_job("job", q, n, comment)
