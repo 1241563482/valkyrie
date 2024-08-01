@@ -584,3 +584,31 @@ class MyParsers():
             default = None,
             help = "F-D smearing for electron enthalpy."
         )
+
+
+        # dmft
+        self.dmft_parser = self.subparser.add_parser(
+            "dmft",
+            help = "Dmft by EDMFT",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        )
+        self.dmft_parser.add_argument(
+            "-ns",
+            "--not-sub",
+            action = "store_true",
+            help = "Only generate the input file, not sub."
+        )
+        self.dmft_parser.add_argument(
+            "-fd",
+            "--fermi-dirac",
+            type = int,
+            default = None,
+            help = "F-D smearing for electron enthalpy."
+        )
+        self.dmft_parser.add_argument(
+            "--fun",
+            type = str,
+            default = "gga",
+            choices = ["gga", "lda"],
+            help = "Functional."
+        )

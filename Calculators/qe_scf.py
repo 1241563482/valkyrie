@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 12 13:08:07 2023
-
-@author: zyj
-"""
-
 import os, shutil, sys, math
 from Input import input_qe_pot
 from Input import poscar2qe, input_qe_scf
