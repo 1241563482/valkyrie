@@ -10,7 +10,17 @@ def check_vaspkit():
         if os.path.isfile(executable_path) and os.access(executable_path, os.X_OK):
             return 0
     raise FileNotFoundError("Vaspkit not found.")
-        
+
+
+def get_symbols(poscar):
+    symbol_list = []
+    poscar = poscar
+    atoms = ase.io.read(poscar)
+    for ii in atoms.symbols:
+        if ii not in symbol_list:
+            symbol_list.append(ii)
+    return symbol_list
+
 
 def get_encut(encut_input):
     enmax_list = []

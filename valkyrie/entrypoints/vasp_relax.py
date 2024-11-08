@@ -107,7 +107,7 @@ LMAXMIX = {}  # If f electron, use 6
 
 def main(*args, pressure = 0, pot = "auto", spin = False, not_sub = False, fermiDirac = False,
          queue = "9242opa!", nodes = 24, comment = "relax", symmetry = False, optcell = False,
-         fun = "gga", u = "None", encut = 600,
+         fun = "gga", u = "None", encut = 600, fElectron = False,
          **kwargs):
 
     # Fun and gga+U part

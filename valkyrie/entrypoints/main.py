@@ -42,13 +42,13 @@ def parse_args():
     )
     relax_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
     relax_parser.add_argument(
         "-fd",
-        "--fermi-dirac",
+        "--fermiDirac",
         type = int,
         default = None,
         help = "F-D smearing for electron enthalpy."
@@ -68,7 +68,7 @@ def parse_args():
         help = "Atom for GGA+U and Ueff."
     )
     relax_parser.add_argument(
-        "--f-electron",
+        "--fElectron",
         action = "store_true",
         default = None,
         help = "f electron for GGA+U."
@@ -101,10 +101,9 @@ def parse_args():
     )
 
     
-        
     # scf
     scf_parser = subparser.add_parser(
-        "scf",
+        "vasp_scf",
         help = "Scf by vasp.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
@@ -128,7 +127,7 @@ def parse_args():
     )
     scf_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
@@ -141,9 +140,9 @@ def parse_args():
     )
     scf_parser.add_argument(
         "-fd",
-        "--fermi-dirac",
-        type = int,
-        default = None,
+        "--fermiDirac",
+        type = float,
+        default = -1,
         help = "F-D smearing for electron enthalpy."
     )
     scf_parser.add_argument(
@@ -161,10 +160,31 @@ def parse_args():
         help = "Atom for GGA+U and Ueff."
     )
     scf_parser.add_argument(
-        "--f-electron",
+        "--fElectron",
         action = "store_true",
         default = None,
         help = "f electron for GGA+U."
+    )
+    scf_parser.add_argument(
+        "-q",
+        "--queue",
+        type = str,
+        default = "9242opa!",
+        help = "Node name."
+    )
+    scf_parser.add_argument(
+        "-n",
+        "--nodes",
+        type = int,
+        default = "24",
+        help = "Number of cores."
+    )
+    scf_parser.add_argument(
+        "-c",
+        "--comment",
+        type = str,
+        default = "scf",
+        help = "Comment."
     )
 
     
@@ -642,13 +662,15 @@ def parse_args():
         help = "Functional."
     )
 
+
     parsed_args = parser.parse_args()
     if parsed_args.command is None:
-        print(__picture__)
         parser.print_help()
     return parsed_args
 
+
 def main():
+    print(__picture__)
     args = parse_args()
     dict_args = vars(args)
     if args.command:

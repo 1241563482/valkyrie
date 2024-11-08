@@ -1,5 +1,5 @@
 #!/bin/sh
-#BSUB -J test
+#BSUB -J scf
 #BSUB -n 24
 #BSUB -q 9242opa!
 
@@ -9,23 +9,6 @@ module load ips/2018u4
 export I_MPI_ADJUST_REDUCE=3
 export I_MPI_FABRICS=shm
 
-# Head and environment and MPIRUN will auto generate
+
 mpiexec.hydra vasp_std
-cp CONTCAR POSCAR
-cp POSCAR POSCAR1
-NN=`grep "in kB" OUTCAR  | wc -l`
-echo "relax 1 calculated with $NN generation" >> log
-for i in `seq 2 10`
-do
-   if [ $NN -gt 5 ]
-   then
-   mpiexec.hydra vasp_std
-   NN=`grep "in kB" OUTCAR  | wc -l`
-   cp CONTCAR POSCAR
-   cp POSCAR POSCAR$i
-   echo "relax $i calculated with $NN generation" >> log
-   else
-   break
-   fi
-done
 

@@ -1,50 +1,31 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec  4 16:39:03 2023
-
-@author: zyj
-"""
-
 import shutil
-from Input import get_info
+from ..input import get_info
 
-def scf(encut, pressure, spin, fd, fun, u_atom, u_value, lmaxmix):
-    pressure = pressure * 10
-    incar = """# INCAR for scf
-ISMEAR = 0
-EDIFF = 1E-6
-EDIFFG = -0.001
-SIGMA = 0.05
-IBRION = -1
-NSW = 0
-ISIF = 2
-ENCUT = {}
-PSTRESS = {}
-PREC = Accurate
-KSPACING = 0.157
-NPAR = 2
-KPAR = 2
-NELM = 120
-""".format(encut, pressure)
-    with open("INCAR", "w") as file:
-        file.write(incar)
-    # Spin
-    if spin == True:
+def modify_INCAR(encut, pressure, spin, fermiDirac, fun, u, fElectron, **kwargs):
+    if spin:
         with open("INCAR", "a") as file:
-            print("\nISPIN = 2", file = file)
-    # Fermi-dirac
-    if fd != None:
+            file.write("\nISPIN = 2\nLORBIT = 11")
+    
+    if fermiDirac > 0:
         with open('INCAR', 'r') as file1, open('INCAR-tmp', 'w') as file2:
             for line in file1:
                 if 'ISMEAR' not in line and 'SIGMA' not in line:
                     file2.write(line)
             kB = 8.617330337217213e-05
-            print("\nISMEAR = -1\nSIGMA = {:.5f}".format(kB * fd), file = file2)
-            print("<=> Valkyrie: Considering electron enthalpy at {} K".format(fd))
+            print("\nISMEAR = -1\nSIGMA = {:.5f}".format(kB * fermiDirac), file=file2)
+            print(f"<=> Valkyrie: Considering electron enthalpy at {fermiDirac} K")
         shutil.move("INCAR-tmp", "INCAR")
-    # GGA+U
-    if fun == "ggau" and u_atom is not None:
-        u_value = float(u_value)
+    
+    if fun == "ggau" and u is not None:
+        u_atom = u[0]
+        u_value = float(u[1])
+        if float(u_value) <= 0:
+            raise Exception("Ueff must be positive.")
+        if fElectron:
+            lmaxmix = 6
+        else:
+            lmaxmix = 4
+
         symbols = get_info.get_symbols("POSCAR")
         ldaul = ""
         ldauu = ""
@@ -67,10 +48,11 @@ LDAUL = {}  # 2 for +U, -1 for not +U
 LDAUU = {}  # Ueff = U-J
 LDAUJ = {}
 LMAXMIX = {}  # If f electron, use 6
-    """.format(ldaul, ldauu, ldauj, lmaxmix)
+        """.format(ldaul, ldauu, ldauj, lmaxmix)
         with open("INCAR", "a") as file:
             file.write(ggau_part)
-    # HSE06
+        print(f"<=> Valkyrie: GGA+U for {u_atom}, Ueff = {u_value}.")
+
     elif fun == "hse":
         hse_part = """
 # HSE part
@@ -82,5 +64,6 @@ AEXX = 0.25
 """
         with open("INCAR", "a") as file:
             file.write(hse_part)
+        print(f"<=> Valkyrie: HSE06 calculation.")
     
-        
+    return 0
