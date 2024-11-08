@@ -1,0 +1,6 @@
+COHPstartEnergy  -10
+COHPendEnergy  10
+usebasisset pbeVaspFit2015
+useRecommendedBasisFunctions
+gaussianSmearingWidth 0.05
+cohpbetween atom 16 and atom 14

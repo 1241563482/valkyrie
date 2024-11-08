@@ -6,37 +6,6 @@ def parse_args():
         description="Python based first-principles calculations tools",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument(
-        "-q",
-        type = str,
-        default = "9242opa!",
-        help = "Node name."
-    )
-    parser.add_argument(
-        "-n",
-        type = int,
-        default = "24",
-        help = "Number of cores."
-    )
-    parser.add_argument(
-        "--comment",
-        type = str,
-        default = "zyjnb",
-        help = "Comment."
-    )
-    parser.add_argument(
-        "--symmetry",
-        type = float,
-        default = None,
-        help = "Find the symmetry before calculations."
-    )
-    parser.add_argument(
-        "-i",
-        "--input",
-        type = str,
-        default = None,
-        help = "Input folder name for other input fils."
-    )
 
 
     subparser = parser.add_subparsers(title="Valid subcommands", dest="command")
@@ -446,7 +415,58 @@ def parse_args():
     )
 
     # md
-    # cohp
+    # COHP
+    cohp_parser = subparser.add_parser(
+        "vasp_cohp",
+        help = "COHP by vasp and lobster.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    cohp_parser.add_argument(
+        "--spin",
+        action = "store_true",
+        help = "Add spin (default FM)."
+    )
+    cohp_parser.add_argument(
+        "-ns",
+        "--not-sub",
+        action = "store_true",
+        help = "Only generate the input file, not sub."
+    )
+    cohp_parser.add_argument(
+        "--pot",
+        type = str,
+        default = "auto",
+        nargs = "+",
+        help = "POTCAR type, eg Li_sv / Li_sv In_d"
+    )
+    cohp_parser.add_argument(
+        "--encut",
+        type = int,
+        default = 0,
+        help = "ENCUT"
+    )
+    cohp_parser.add_argument(
+        "-q",
+        "--queue",
+        type = str,
+        default = "9242opa!",
+        help = "Node name."
+    )
+    cohp_parser.add_argument(
+        "-n",
+        "--nodes",
+        type = int,
+        default = "24",
+        help = "Number of cores."
+    )
+    cohp_parser.add_argument(
+        "-c",
+        "--comment",
+        type = str,
+        default = "cohp",
+        help = "Comment."
+    )
+
     # fermi
     # summary (relax, zpe, electride, free energy)
     

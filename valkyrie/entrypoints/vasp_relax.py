@@ -1,10 +1,8 @@
 import os, shutil, sys
-from ..input import input_vasp_potcar, input_vasp_relax
-from ..input import get_info, input_vasp_kpoints
+from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
+from .. import __shell__
 from ase.io import read
-import pkg_resources
-
 
 def gen_INCAR(encut, pressure, spin, fd, u_atom, u_value, lmaxmix, optcell):
     pressure = pressure * 10
@@ -103,6 +101,7 @@ LMAXMIX = {}  # If f electron, use 6
     """.format(ldaul, ldauu, ldauj, lmaxmix)
         with open("INCAR", "a") as file:
             file.write(ggau_part)
+    return 0
 
 
 
@@ -110,9 +109,6 @@ def main(*args, pressure = 0, pot = "auto", spin = False, not_sub = False, fermi
          q = "9242opa!", n = 24, comment = "relax", symmetry = False, optcell = False,
          fun = "gga", u = "None", encut = 600,
          **kwargs):
-
-    # PATH
-    __shell__ = pkg_resources.resource_filename('valkyrie', 'shell_scripts')
 
     # Fun and gga+U part
     if fun == "ggau":

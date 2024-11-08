@@ -1,24 +1,18 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec  8 19:48:21 2023
-
-@author: Yijie Zhu
-"""
-
 import sys, os
 sys.path.append('../')
 from set_up import *
-from set_up import __mpirun__
 
-def gen_job(job, job_file):
+def gen_job(*args, job = "job", job_file = None, task = run_vasp, **kwargs):
     with open(job_file, "r") as file:
         lines = file.readlines()
+        for i, line in enumerate(lines):
+            if "__TASK__" in line:
+                lines[i] = task + "\n"
         body = ''.join(lines)
     with open(job, "w") as file:
         print(job_head, file = file)
         print(environment, file = file)
         print(body, file = file)
-    os.system('sed -i "s/MPIRUN/{}/g" {}'.format(__mpirun__, job))
     
         
 def sub(job):

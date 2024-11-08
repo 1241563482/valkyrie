@@ -21,27 +21,5 @@ export I_MPI_ADJUST_REDUCE=3
 export I_MPI_FABRICS=shm
 """
 
-
-__mpirun__ = "mpirun -np \$LSB_DJOB_NUMPROC"   # A \ needs to set before the $
-__work__ = os.getcwd()
-
-
-### Comment this part for others ###
-host_name = subprocess.run("echo $USER", shell=True, capture_output=True)
-host_name = host_name.stdout.strip().decode('utf-8')
-if host_name == "jiansun":
-    __shell__ = "/share/home/jiansun/zyj/val/shell_scripts"
-    __python__ = "/share/home/jiansun/zyj/val/python_scripts"
-elif host_name == "js_zhuyj":
-    __shell__ = "/fsa/home/js_zhuyj/valkyrie/shell_scripts"
-    __python__ = "/fsa/home/js_zhuyj/valkyrie/python_scripts"
-elif host_name == "yijiezhu":
-    __shell__ = "/home/yijiezhu/valkyrie/shell_scripts"
-    __python__ = "/home/yijiezhu/valkyrie/python_scripts"
-### Comment this part for others ###
-
-
-# For others, comment the above lines and set the __shell__ and __python__ path
-#__shell__ = "/path/to/shell/scripts"
-#__python__ = "/path/to/python/scripts"
-
+run_vasp = "mpiexec.hydra vasp_std"
+#__run_vasp__ = "mpirun -np \$LSB_DJOB_NUMPROC vasp_std"   # A \ needs to set before the $
