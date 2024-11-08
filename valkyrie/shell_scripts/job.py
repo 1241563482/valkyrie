@@ -7,7 +7,7 @@ def gen_job(*args, job = "job", job_file = None, task = run_vasp, **kwargs):
         lines = file.readlines()
         for i, line in enumerate(lines):
             if "__TASK__" in line:
-                lines[i] = task + "\n"
+                lines[i] = lines[i].replace("__TASK__", task)
         body = ''.join(lines)
     with open(job, "w") as file:
         print(job_head, file = file)

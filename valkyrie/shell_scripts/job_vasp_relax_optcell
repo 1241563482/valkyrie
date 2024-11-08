@@ -1,5 +1,5 @@
 # Head and environment and MPIRUN will auto generate
-MPIRUN vasp_std
+__TASK__
 cp CONTCAR POSCAR
 cp POSCAR POSCAR1
 NN=`grep "in kB" OUTCAR  | wc -l`
@@ -8,7 +8,7 @@ for i in `seq 2 10`
 do
    if [ $NN -gt 5 ]
    then
-   MPIRUN vasp_std
+   __TASK__
    NN=`grep "in kB" OUTCAR  | wc -l`
    cp CONTCAR POSCAR
    cp POSCAR POSCAR$i

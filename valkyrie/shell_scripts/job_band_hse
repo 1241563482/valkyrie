@@ -2,13 +2,13 @@ rm -f CHG* WAVECAR KPOINTS
 
 cp INCAR-scf INCAR
 cp KPOINTS-scf KPOINTS
-MPIRUN vasp_std
+__TASK__
 cp OSZICAR OSZICAR-scf
 cp OUTCAR OUTCAR-scf
 
 cp INCAR-band INCAR
 cp KPOINTS-band KPOINTS
-MPIRUN vasp_std
+__TASK__
 cp OSZICAR OSZICAR-band
 cp OUTCAR OUTCAR-band
 cp vasprun.xml vasprun.xml-band

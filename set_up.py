@@ -22,4 +22,5 @@ export I_MPI_FABRICS=shm
 """
 
 run_vasp = "mpiexec.hydra vasp_std"
+run_vasp_opt = "mpiexec.hydra vasprelax"
 #__run_vasp__ = "mpirun -np \$LSB_DJOB_NUMPROC vasp_std"   # A \ needs to set before the $

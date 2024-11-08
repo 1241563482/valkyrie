@@ -1,10 +1,10 @@
 cp INCAR-scf INCAR
-MPIRUN vasp_std
+__TASK__
 cp OSZICAR OSZICAR-scf
 cp OUTCAR OUTCAR-scf
 
 cp INCAR-dos INCAR
-MPIRUN vasp_std
+__TASK__
 cp OSZICAR OSZICAR-dos
 cp OUTCAR OUTCAR-dos
 echo -e "111\n1" | vaspkit # TDOS

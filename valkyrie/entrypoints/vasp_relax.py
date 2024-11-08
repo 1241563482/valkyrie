@@ -1,7 +1,7 @@
-import os, shutil, sys
+import os, shutil
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
-from .. import __shell__
+from .. import __shell__, run_vasp, run_vasp_opt
 from ase.io import read
 
 def gen_INCAR(encut, pressure, spin, fd, u_atom, u_value, lmaxmix, optcell):
@@ -106,7 +106,7 @@ LMAXMIX = {}  # If f electron, use 6
 
 
 def main(*args, pressure = 0, pot = "auto", spin = False, not_sub = False, fermiDirac = False,
-         q = "9242opa!", n = 24, comment = "relax", symmetry = False, optcell = False,
+         queue = "9242opa!", nodes = 24, comment = "relax", symmetry = False, optcell = False,
          fun = "gga", u = "None", encut = 600,
          **kwargs):
 
@@ -134,9 +134,9 @@ def main(*args, pressure = 0, pot = "auto", spin = False, not_sub = False, fermi
     chemical_formula = poscar.get_chemical_formula()
     if not os.path.exists("POSCAR"):
         raise Exception("No POSCAR file found at current path.")
-    if symmetry != None:
-        os.system("phonopy --symmetry --tolerance={} | grep space | head -1".format(symmetry))
-        shutil.copy2("PPOSCAR", "POSCAR")
+    #if symmetry != None:
+    #    os.system("phonopy --symmetry --tolerance={} | grep space | head -1".format(symmetry))
+    #    shutil.copy2("PPOSCAR", "POSCAR")
     
 
     input_vasp_potcar.potcar(pot) # POTCAR
@@ -150,10 +150,10 @@ def main(*args, pressure = 0, pot = "auto", spin = False, not_sub = False, fermi
 
     # Job and Sub
     if optcell == False:
-        job.gen_job("job", "{}/job_relax".format(__shell__))
+        job.gen_job(job = "job", job_file = "{}/job_vasp_relax".format(__shell__), task = run_vasp)
     else:
-        job.gen_job("job", "{}/job_relax_optcell".format(__shell__))
-    job.control_job("job", q, n, comment)
+        job.gen_job(job = "job", job_file = "{}/job_vasp_relax_optcell".format(__shell__), task = run_vasp_opt)
+    job.control_job("job", queue, nodes, comment)
     print("<=> Valkyrie: Only generate input file.") if not_sub == True else job.sub("job")
         
 

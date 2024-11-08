@@ -9,7 +9,7 @@ def parse_args():
 
 
     subparser = parser.add_subparsers(title="Valid subcommands", dest="command")
-    # relax
+    # relax by vasp
     relax_parser = subparser.add_parser(
         "vasp_relax",
         help = "Relax by vasp.",
@@ -74,11 +74,32 @@ def parse_args():
         help = "f electron for GGA+U."
     )
     relax_parser.add_argument(
-        "-opt",
         "--optcell",
         action = "store_true",
         help = "Constrained relax."
     )
+    relax_parser.add_argument(
+        "-q",
+        "--queue",
+        type = str,
+        default = "9242opa!",
+        help = "Node name."
+    )
+    relax_parser.add_argument(
+        "-n",
+        "--nodes",
+        type = int,
+        default = "24",
+        help = "Number of cores."
+    )
+    relax_parser.add_argument(
+        "-c",
+        "--comment",
+        type = str,
+        default = "relax",
+        help = "Comment."
+    )
+
     
         
     # scf

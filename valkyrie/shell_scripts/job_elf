@@ -1,5 +1,5 @@
 
-MPIRUN vasp_std
+__TASK__
 
 #result=`grep NGX OUTCAR | head -1`
 #NGX=$(echo "$result" | awk '{print $5}')

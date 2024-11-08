@@ -17,9 +17,9 @@ setup(
     install_requires=[
         "numpy",     
         "ase",
-        "os",
         "matplotlib",
-        "phonopy"
+        "phonopy",
+        "periodictable"
     ],
     license="MIT",
     description="Valkyrie: APEX LEGENDS NEVER DIE",
@@ -27,3 +27,4 @@ setup(
     long_description_content_type="text/markdown",
     entry_points={"console_scripts": ["val = valkyrie.entrypoints.main:main"]},
 )
+
