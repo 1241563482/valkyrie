@@ -1,5 +1,5 @@
 import os, shutil
-from ..input import input_vasp_potcar, get_info
+from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
 from ase.io import read
 from .. import __shell__, __python__, run_vasp
@@ -14,7 +14,6 @@ IBRION = -1
 NSW = 0
 ISIF = 2
 ENCUT = {encut}
-KSPACING = 0.157
 PREC = Accurate
 ISMEAR = -5
 NEDOS = 2001
@@ -31,7 +30,6 @@ IBRION = -1
 NSW = 0
 ISIF = 2
 ENCUT = {encut}
-KSPACING = 0.157
 PREC = Accurate
 ISMEAR = -5
 NEDOS = 2001
@@ -62,6 +60,7 @@ def main(*args, pot = "auto", spin = False, not_sub = False,
     input_vasp_potcar.potcar(pot) # POTCAR
     encut = get_info.get_encut(encut) # ENCUT
     gen_INCAR(encut, spin) # INCAR
+    input_vasp_kpoints.kpoints_byhand(poscar, ceiling = 50) # KPOINTS
 
 
     # Job and Sub
@@ -69,6 +68,7 @@ def main(*args, pot = "auto", spin = False, not_sub = False,
     job.control_job("job", queue, nodes, comment)
     print(f"<=> Valkyrie: COHP for {chemical_formula} , ENCUT = {encut}, POTCAR = {pot}.")
     print("<=> Valkyrie: Only generate input file.") if not_sub else job.sub("job")
+
 
     # Scripts
     shutil.copy(f"{__python__}/vasp_cohp.py", "COHP.py")

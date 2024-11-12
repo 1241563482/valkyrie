@@ -1,5 +1,5 @@
 #!/bin/sh
-#BSUB -J scf
+#BSUB -J cohp
 #BSUB -n 24
 #BSUB -q 9242opa!
 
@@ -9,6 +9,16 @@ module load ips/2018u4
 export I_MPI_ADJUST_REDUCE=3
 export I_MPI_FABRICS=shm
 
-
+cp INCAR1 INCAR
+mpiexec.hydra vasp_std
+NBANDS=`grep NBANDS OUTCAR | tail -1 | awk '{printf $NF}'`
+NBANDS=$( echo "$NBANDS * 2" | bc)
+echo "" >> INCAR2
+echo "NBANDS = $NBANDS" >> INCAR2
+cp INCAR2 INCAR
 mpiexec.hydra vasp_std
 
+python COHP.py
+lobster
+python plot.py
+rm WAVECAR
