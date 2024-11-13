@@ -10,4 +10,4 @@ __TASK__
 python COHP.py
 lobster
 python plot.py
-rm WAVECAR
+rm -f CHG* WAVECAR vasprun.xml

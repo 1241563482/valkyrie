@@ -50,7 +50,7 @@ def parse_args():
         "-fd",
         "--fermiDirac",
         type = int,
-        default = None,
+        default = -1,
         help = "F-D smearing for electron enthalpy."
     )
     relax_parser.add_argument(

@@ -41,7 +41,7 @@ NELM = 120
 
 def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiDirac = -1,
          queue = "9242opa!", nodes = 24, comment = "relax", symmetry = False, optcell = False,
-         fun = "gga", u = "None", encut = 600, fElectron = False,
+         fun = "gga", u = "None", encut = 0, fElectron = False,
          **kwargs):
 
     try:
