@@ -216,7 +216,7 @@ def parse_args():
     ) 
     band_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )  
@@ -233,7 +233,7 @@ def parse_args():
         help = "Functional for band."
     )
     band_parser.add_argument(
-        "--f-electron",
+        "--fElectron",
         action = "store_true",
         help = "f electron for GGA+U."
     )
@@ -245,9 +245,9 @@ def parse_args():
     )
     band_parser.add_argument(
         "-fd",
-        "--fermi-dirac",
+        "--fermiDirac",
         type = int,
-        default = None,
+        default = -1,
         help = "F-D smearing for electron enthalpy."
     )
     
@@ -280,7 +280,7 @@ def parse_args():
     ) 
     dos_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )  
@@ -297,7 +297,7 @@ def parse_args():
         help = "Functional for dos."
     )
     dos_parser.add_argument(
-        "--f-electron",
+        "--fElectron",
         action = "store_true",
         help = "f electron for GGA+U."
     )
@@ -309,9 +309,9 @@ def parse_args():
     )
     dos_parser.add_argument(
         "-fd",
-        "--fermi-dirac",
+        "--fermiDirac",
         type = int,
-        default = None,
+        default = -1,
         help = "F-D smearing for electron enthalpy."
     )
     
@@ -342,7 +342,7 @@ def parse_args():
     )
     elf_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
@@ -368,7 +368,7 @@ def parse_args():
         help = "Atom for GGA+U and Ueff."
     )
     elf_parser.add_argument(
-        "--f-electron",
+        "--fElectron",
         action = "store_true",
         default = None,
         help = "f electron for GGA+U."
@@ -376,16 +376,9 @@ def parse_args():
     
     # ph
     ph_parser = subparser.add_parser(
-        "ph",
+        "vasp_ph",
         help = "Ph by vasp + phonopy.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
-    ph_parser.add_argument(
-        "-f",
-        "--folder",
-        type = str,
-        nargs = "+",
-        help="A relaxed folder for ph."
     )
     ph_parser.add_argument(
         "--encut",
@@ -407,15 +400,15 @@ def parse_args():
     )
     ph_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
     ph_parser.add_argument(
         "-fd",
-        "--fermi-dirac",
+        "--fermiDirac",
         type = int,
-        default = None,
+        default = -1,
         help = "F-D smearing for electron enthalpy."
     )
     ph_parser.add_argument(
@@ -449,7 +442,7 @@ def parse_args():
         help = "Atom for GGA+U and Ueff."
     )
     ph_parser.add_argument(
-        "--f-electron",
+        "--fElectron",
         action = "store_true",
         default = None,
         help = "f electron for GGA+U."
@@ -469,7 +462,7 @@ def parse_args():
     )
     cohp_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
@@ -545,7 +538,7 @@ def parse_args():
     )
     elph_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
@@ -577,15 +570,15 @@ def parse_args():
     )
     qerelax_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
     qerelax_parser.add_argument(
         "-fd",
-        "--fermi-dirac",
+        "--fermiDirac",
         type = int,
-        default = None,
+        default = -1,
         help = "F-D smearing for electron enthalpy."
     )
     qerelax_parser.add_argument(
@@ -615,7 +608,7 @@ def parse_args():
     )
     qescf_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
@@ -628,9 +621,9 @@ def parse_args():
     )
     qescf_parser.add_argument(
         "-fd",
-        "--fermi-dirac",
+        "--fermiDirac",
         type = int,
-        default = None,
+        default = -1,
         help = "F-D smearing for electron enthalpy."
     )
 
@@ -643,15 +636,15 @@ def parse_args():
     )
     dmft_parser.add_argument(
         "-ns",
-        "--not-sub",
+        "--notSub",
         action = "store_true",
         help = "Only generate the input file, not sub."
     )
     dmft_parser.add_argument(
         "-fd",
-        "--fermi-dirac",
+        "--fermiDirac",
         type = int,
-        default = None,
+        default = -1,
         help = "F-D smearing for electron enthalpy."
     )
     dmft_parser.add_argument(

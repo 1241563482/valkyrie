@@ -73,6 +73,7 @@ def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiD
         input_vasp_kpoints.kpoints_byhand(read("POSCAR"), ceiling = 50)
         os.system("sed -i 's/KSPACING/#KSPACING/g' INCAR")
         job.gen_job(job = "job", job_file = "{}/job_vasp_relax_optcell".format(__shell__), task = run_vasp_opt)
+        job.control_job("job", queue, nodes, comment)
         print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
         print("<=> Valkyrie: Relax for {} with vasprelax version, ENCUT = {}, POTCAR = {}."\
             .format(poscar, encut, pot))
@@ -81,6 +82,7 @@ def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiD
             print("\033[0;31;40m", "\b<=> WARNING: The Pressure tag is ignored!", "\033[0m")
     else:
         job.gen_job(job = "job", job_file = "{}/job_vasp_relax".format(__shell__), task = run_vasp)
+        job.control_job("job", queue, nodes, comment)
         print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
         print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
             .format(poscar, pressure, encut, pot))

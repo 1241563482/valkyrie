@@ -48,10 +48,6 @@ def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiD
         poscar = read("POSCAR").get_chemical_formula()
     except:
         raise Exception("No POSCAR file found at current path.")
-    #if symmetry != None:
-    #    os.system("phonopy --symmetry --tolerance={} | grep space | head -1".format(symmetry))
-    #    shutil.copy2("PPOSCAR", "POSCAR")
-
     input_vasp_potcar.potcar(pot) # POTCAR
     encut = get_info.get_encut(encut) # ENCUT
     gen_INCAR(**locals()) # INCAR

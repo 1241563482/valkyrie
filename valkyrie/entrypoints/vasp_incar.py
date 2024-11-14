@@ -1,7 +1,7 @@
 import shutil
 from ..input import get_info
 
-def modify_INCAR(encut, pressure, spin, fermiDirac, fun, u, fElectron, **kwargs):
+def modify_INCAR(spin, fermiDirac, fun, u, fElectron, **kwargs):
     if spin:
         with open("INCAR", "a") as file:
             file.write("\nISPIN = 2\nLORBIT = 11")

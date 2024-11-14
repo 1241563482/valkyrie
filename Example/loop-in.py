@@ -1,5 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Dec  8 20:08:20 2023
+
+@author: Yijie Zhu
+"""
+
 import os, shutil
-from valkyrie import job
+import job
 
 dir_list = []
 for file in os.listdir():
