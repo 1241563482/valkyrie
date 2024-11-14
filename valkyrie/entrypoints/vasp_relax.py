@@ -5,7 +5,7 @@ from .. import __shell__, run_vasp, run_vasp_opt
 from ase.io import read
 from . import vasp_incar
 
-def gen_INCAR(encut, pressure, spin, fermiDirac, fun, u, fElectron, optcell, **kwargs):
+def gen_input(encut, pressure, spin, fermiDirac, fun, u, fElectron, optcell, **kwargs):
     pressure = pressure * 10
 
     incar = f"""# INCAR for relax
@@ -37,7 +37,8 @@ KPAR = 2
         with open("INCAR", "a") as file:
             print("IVDW = 11", file = file)
         
-    vasp_incar.modify_INCAR(encut      =   encut, 
+    vasp_incar.modify_INCAR(file       =   ["INCAR"],
+                            encut      =   encut, 
                             pressure   =   pressure, 
                             spin       =   spin, 
                             fermiDirac =   fermiDirac,
@@ -57,15 +58,10 @@ def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiD
         poscar = read("POSCAR").get_chemical_formula()
     except:
         raise Exception("No POSCAR file found at current path.")
-    if not os.path.exists("POSCAR"):
-        raise Exception("No POSCAR file found at current path.")
-    #if symmetry != None:
-    #    os.system("phonopy --symmetry --tolerance={} | grep space | head -1".format(symmetry))
-    #    shutil.copy2("PPOSCAR", "POSCAR")
     
     input_vasp_potcar.potcar(pot) # POTCAR
     encut = get_info.get_encut(encut) # ENCUT
-    gen_INCAR(**locals()) # INCAR
+    gen_input(**locals()) # INCAR
 
 
     # KPOINTS and job

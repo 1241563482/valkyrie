@@ -27,7 +27,8 @@ NELM = 120
     with open("INCAR", "w") as file:
         file.write(incar)
     
-    vasp_incar.modify_INCAR(encut      =   encut, 
+    vasp_incar.modify_INCAR(file       =   ["INCAR"],
+                            encut      =   encut,   
                             pressure   =   pressure, 
                             spin       =   spin, 
                             fermiDirac =   fermiDirac,

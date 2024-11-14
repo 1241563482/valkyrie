@@ -3,9 +3,10 @@ from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
 from ase.io import read
 from .. import __shell__, __python__, run_vasp
+from . import vasp_incar
 
 
-def gen_INCAR(encut, spin):
+def gen_INCAR(encut, pressure, spin, fermiDirac, fun, u, fElectron, **kwargs):
     INCAR1 = f"""# COHP step1
 EDIFF = 1E-6
 EDIFFG = -0.01
@@ -40,11 +41,16 @@ NELM = 120"""
     with open("INCAR1", "w") as file1, open("INCAR2", "w") as file2:
         file1.write(INCAR1)
         file2.write(INCAR2)
-
-        if spin == True:
-            print("\nISPIN = 2\nLORBIT = 11", file = file1)
-            print("\nISPIN = 2\nLORBIT = 11", file = file2)
-            print("<=> Valkyrie: Default is FM, add MAGMOM in INCAR for other mag-configurations.")
+    
+    vasp_incar.modify_INCAR(file       =   ["INCAR1", "INCAR2"],
+                            encut      =   encut, 
+                            pressure   =   pressure, 
+                            spin       =   spin, 
+                            fermiDirac =   fermiDirac,
+                            fun        =   fun, 
+                            u          =   u,
+                            fElectron  =   fElectron
+                            )
 
     return 0
 
