@@ -1,10 +1,37 @@
 import argparse, importlib, logging, os, subprocess
-from .. import __picture__
+from .. import __picture__, __version__
+from ..logger import set_logger
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Python based first-principles calculations tools",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    parser.add_argument(
+        "-v",
+        "--version",
+        help = "print version",
+        action = 'version',
+        version = __version__
+    )
+
+    parser_log = argparse.ArgumentParser(
+        add_help=False, formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser_log.add_argument(
+        "-ll",
+        "--log-level",
+        choices = ["DEBUG", "INFO", "WARNING", "ERROR"],
+        default = "INFO",
+        help = "set verbosity level by strings: ERROR, WARNING, INFO and DEBUG",
+    )
+    parser_log.add_argument(
+        "-lp",
+        "--log-path",
+        type = str,
+        default = "log.txt",
+        help = "set log file to log messages to disk",
     )
 
 
@@ -447,6 +474,27 @@ def parse_args():
         default = None,
         help = "f electron for GGA+U."
     )
+    ph_parser.add_argument(
+        "-q",
+        "--queue",
+        type = str,
+        default = "9242opa!",
+        help = "Node name."
+    )
+    ph_parser.add_argument(
+        "-n",
+        "--nodes",
+        type = int,
+        default = "24",
+        help = "Number of cores."
+    )
+    ph_parser.add_argument(
+        "-c",
+        "--comment",
+        type = str,
+        default = "cohp",
+        help = "Comment."
+    )
 
     # md
     # COHP
@@ -663,11 +711,12 @@ def parse_args():
 
 
 def main():
-    print(__picture__)
     args = parse_args()
     dict_args = vars(args)
+
     if args.command:
         try:
+            print(__picture__)
             f = getattr(importlib.import_module('valkyrie.entrypoints.{}'.format(args.command)), "main")
         except:
             raise RuntimeError(f"unknown command {args.command}")

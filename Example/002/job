@@ -1,5 +1,5 @@
 #!/bin/sh
-#BSUB -J test
+#BSUB -J 002
 #BSUB -n 36
 #BSUB -q cpu1
 

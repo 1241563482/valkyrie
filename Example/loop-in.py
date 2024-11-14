@@ -1,12 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec  8 20:08:20 2023
-
-@author: Yijie Zhu
-"""
-
 import os, shutil
-import job
+import valkyrie.shell_scripts.job as job
 
 dir_list = []
 for file in os.listdir():

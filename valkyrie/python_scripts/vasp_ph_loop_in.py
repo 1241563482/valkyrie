@@ -1,5 +1,5 @@
 import os, shutil
-from valkyrie import job
+import valkyrie.shell_scripts.job as job
 
 dir_list = []
 for file in os.listdir():
