@@ -16,16 +16,18 @@ def modify_INCAR(file, spin, fermiDirac, fun, u, fElectron, **kwargs):
                 print("\nISMEAR = -1\nSIGMA = {:.5f}".format(kB * fermiDirac), file=file2)
                 print(f"<=> Valkyrie: Considering electron enthalpy at {fermiDirac} K")
             shutil.move("INCAR-tmp", f)
+
+
+
+        if fun != "ggau" and u is not None:
+            raise Exception("u only works for fun=ggau")
         
         if fun == "ggau" and u is not None:
             u_atom = u[0]
             u_value = float(u[1])
             if float(u_value) <= 0:
                 raise Exception("Ueff must be positive.")
-            if fElectron:
-                lmaxmix = 6
-            else:
-                lmaxmix = 4
+            lmaxmix = 6 if fElectron else 4
 
             symbols = get_info.get_symbols("POSCAR")
             ldaul = ""
