@@ -7,7 +7,6 @@ from . import vasp_incar
 
 def gen_input(encut, pressure, spin, fermiDirac, fun, u, fElectron, optcell, **kwargs):
     pressure = pressure * 10
-
     incar = f"""# INCAR for relax
 PREC = Accurate
 EDIFF = 1e-6

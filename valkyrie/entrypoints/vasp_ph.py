@@ -25,12 +25,13 @@ SYMPREC = 1E-12"""
     with open("INCAR", "w") as file:
         file.write(incar)
     
-    vasp_incar.modify_INCAR(spin        =   spin, 
+    vasp_incar.modify_INCAR(file        =   ["INCAR"],
+                            spin        =   spin, 
                             fermiDirac  =   fermiDirac,
                             fun         =   fun, 
                             u           =   u,
                             fElectron   =   fElectron
-                        )
+                            )
     
     # band.conf
     band_conf = f"""
@@ -107,8 +108,6 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "ph", notSub = False,
     # Other input files
     shutil.copy2("{}/get_free_energy.py".format(__python__), "get_free_energy.py")
     shutil.copy2("{}/vasp_ph_loop_in.py".format(__python__), "loop-in.py")
-    #shutil.copy2("{}/job.py".format(__shell__), "job.py")
-    #shutil.copy2("{}/../../set_up.py".format(__python__), "set_up.py")
     
 
     # Job and Sub

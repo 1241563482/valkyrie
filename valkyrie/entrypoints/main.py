@@ -492,7 +492,7 @@ def parse_args():
         "-c",
         "--comment",
         type = str,
-        default = "cohp",
+        default = "ph",
         help = "Comment."
     )
 
@@ -547,6 +547,26 @@ def parse_args():
         type = str,
         default = "cohp",
         help = "Comment."
+    )
+    cohp_parser.add_argument(
+        "--fun",
+        type = str,
+        default = "gga",
+        choices = ["gga", "ggau", "hse"],
+        help = "Functional."
+    )
+    cohp_parser.add_argument(
+        "-u",
+        type = str,
+        nargs = 2,
+        default = None,
+        help = "Atom for GGA+U and Ueff."
+    )
+    cohp_parser.add_argument(
+        "--fElectron",
+        action = "store_true",
+        default = None,
+        help = "f electron for GGA+U."
     )
 
     # fermi

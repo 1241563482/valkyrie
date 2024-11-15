@@ -28,8 +28,6 @@ NELM = 120
         file.write(incar)
     
     vasp_incar.modify_INCAR(file       =   ["INCAR"],
-                            encut      =   encut,   
-                            pressure   =   pressure, 
                             spin       =   spin, 
                             fermiDirac =   fermiDirac,
                             fun        =   fun, 
@@ -40,11 +38,12 @@ NELM = 120
 
 
 
-def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiDirac = -1,
-         queue = "9242opa!", nodes = 24, comment = "relax", symmetry = False, optcell = False,
-         fun = "gga", u = "None", encut = 0, fElectron = False,
+def main(*args, queue = "9242opa!", nodes = 24, comment = "band", notSub = False,
+         pressure = 0, pot = "auto", encut = 0,
+         spin = False,
+         fermiDirac = -1,
+         fun = "gga", u = "None", fElectron = False,
          **kwargs):
-
     try:
         poscar = read("POSCAR").get_chemical_formula()
     except:

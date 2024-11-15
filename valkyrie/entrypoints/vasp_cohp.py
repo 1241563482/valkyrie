@@ -6,7 +6,7 @@ from .. import __shell__, __python__, run_vasp
 from . import vasp_incar
 
 
-def gen_INCAR(encut, pressure, spin, fermiDirac, fun, u, fElectron, **kwargs):
+def gen_INCAR(encut, spin, fun, u, fElectron, **kwargs):
     INCAR1 = f"""# COHP step1
 EDIFF = 1E-6
 EDIFFG = -0.01
@@ -43,10 +43,7 @@ NELM = 120"""
         file2.write(INCAR2)
     
     vasp_incar.modify_INCAR(file       =   ["INCAR1", "INCAR2"],
-                            encut      =   encut, 
-                            pressure   =   pressure, 
                             spin       =   spin, 
-                            fermiDirac =   fermiDirac,
                             fun        =   fun, 
                             u          =   u,
                             fElectron  =   fElectron
@@ -54,8 +51,10 @@ NELM = 120"""
 
     return 0
 
-def main(*args, pot = "auto", spin = False, not_sub = False, 
-         queue = "9242opa!", nodes = 24, comment = "cohp", encut = 0,
+def main(*args, queue = "9242opa!", nodes = 24, comment = "cohp", notSub = False,
+         pot = "auto", encut = 0,
+         spin = False,
+         fun = "gga", u = "None", fElectron = False,
          **kwargs):
     
     # POSCAR
@@ -65,7 +64,7 @@ def main(*args, pot = "auto", spin = False, not_sub = False,
         raise Exception("No POSCAR file found at current path.")
     input_vasp_potcar.potcar(pot) # POTCAR
     encut = get_info.get_encut(encut) # ENCUT
-    gen_INCAR(encut, spin) # INCAR
+    gen_INCAR(encut, spin, fun, u, fElectron) # INCAR
     input_vasp_kpoints.kpoints_byhand(poscar, ceiling = 50) # KPOINTS
 
 
@@ -73,7 +72,7 @@ def main(*args, pot = "auto", spin = False, not_sub = False,
     job.gen_job(job = "job", job_file = "{}/job_cohp".format(__shell__), task = run_vasp)
     job.control_job("job", queue, nodes, comment)
     print(f"<=> Valkyrie: COHP for {chemical_formula} , ENCUT = {encut}, POTCAR = {pot}.")
-    print("<=> Valkyrie: Only generate input file.") if not_sub else job.sub("job")
+    print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
 
 
     # Scripts

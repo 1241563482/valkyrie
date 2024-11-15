@@ -1,7 +1,7 @@
 #!/bin/sh
 #BSUB -J 002
-#BSUB -n 36
-#BSUB -q cpu1
+#BSUB -n 24
+#BSUB -q 9242opa!
 
 
 source activate magus-new

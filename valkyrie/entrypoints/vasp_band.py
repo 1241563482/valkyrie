@@ -60,9 +60,10 @@ KPAR = 2""".format(encut)
 
 
 
-def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiDirac = -1,
-         queue = "9242opa!", nodes = 24, comment = "relax", symmetry = False, optcell = False,
-         fun = "gga", u = "None", encut = 0, fElectron = False,
+def main(*args, queue = "9242opa!", nodes = 24, comment = "band", notSub = False,
+         pot = "auto", encut = 0,
+         spin = False,
+         fun = "gga", u = "None", fElectron = False,
          **kwargs):
 
 
