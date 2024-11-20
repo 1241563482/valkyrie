@@ -93,8 +93,7 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "ph", notSub = False,
         poscar = read("POSCAR").get_chemical_formula()
     except:
         raise Exception("No POSCAR file found at current path.")
-    if not os.path.exists("POSCAR"):
-        raise Exception("No POSCAR file found at current path.")
+    
     # Super cell
     os.system("phonopy -d --dim {} {} {} --tolerance {} > /dev/null".format(*dim, symmetry))
 

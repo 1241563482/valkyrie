@@ -8,9 +8,9 @@ sub_command = "bsub <"
 
 
 job_head = """#!/bin/sh
-#BSUB -J ph
-#BSUB -n 12
-#BSUB -q 9242opa!
+#BSUB -J Bilibili@yijiezhu
+#BSUB -n 114514
+#BSUB -q APEX legends never die
 """
 
 
@@ -21,6 +21,7 @@ export I_MPI_ADJUST_REDUCE=3
 export I_MPI_FABRICS=shm
 """
 
+
 run_vasp = "mpiexec.hydra vasp_std"
 run_vasp_opt = "mpiexec.hydra vasprelax"
-#__run_vasp__ = "mpirun -np \$LSB_DJOB_NUMPROC vasp_std"   # A \ needs to set before the $
+run_vasp_gam = "mpiexec.hydra vasp_gam"

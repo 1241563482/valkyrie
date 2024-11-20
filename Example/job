@@ -1,5 +1,5 @@
 #!/bin/sh
-#BSUB -J cohp
+#BSUB -J vasp_md
 #BSUB -n 24
 #BSUB -q 9242opa!
 

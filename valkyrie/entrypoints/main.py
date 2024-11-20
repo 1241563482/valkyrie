@@ -35,410 +35,83 @@ def parse_args():
     )
 
 
+
     subparser = parser.add_subparsers(title="Valid subcommands", dest="command")
-    # relax by vasp
-    relax_parser = subparser.add_parser(
+    subparserList = []
+
+    # Relax by vasp
+    vasp_relax_parser = subparser.add_parser(
         "vasp_relax",
         help = "Relax by vasp.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    relax_parser.add_argument(
+    subparserList.append(vasp_relax_parser)
+    vasp_relax_parser.add_argument(
         "-p",
         "--pressure",
         type = float,
         default = 0.0,
         help = "Pressure"
     )
-    relax_parser.add_argument(
-        "--encut",
-        type = int,
-        default = 0,
-        help = "ENCUT"
-    )
-    relax_parser.add_argument(
-        "--pot",
-        type = str,
-        default = "auto",
-        nargs = "+",
-        help = "POTCAR type, eg Li_sv or V"
-    )
-    relax_parser.add_argument(
-        "--spin",
-        action = "store_true",
-        help = "Add spin (default FM)."
-    )
-    relax_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )
-    relax_parser.add_argument(
-        "-fd",
-        "--fermiDirac",
-        type = int,
-        default = -1,
-        help = "F-D smearing for electron enthalpy."
-    )
-    relax_parser.add_argument(
-        "--fun",
-        type = str,
-        default = "gga",
-        choices = ["gga", "ggau"],
-        help = "Functional."
-    )
-    relax_parser.add_argument(
-        "-u",
-        type = str,
-        nargs = 2,
-        default = None,
-        help = "Atom for GGA+U and Ueff."
-    )
-    relax_parser.add_argument(
-        "--fElectron",
-        action = "store_true",
-        default = None,
-        help = "f electron for GGA+U."
-    )
-    relax_parser.add_argument(
+    vasp_relax_parser.add_argument(
         "--optcell",
         action = "store_true",
         help = "Constrained relax."
     )
-    relax_parser.add_argument(
-        "-q",
-        "--queue",
-        type = str,
-        default = "9242opa!",
-        help = "Node name."
-    )
-    relax_parser.add_argument(
-        "-n",
-        "--nodes",
-        type = int,
-        default = "24",
-        help = "Number of cores."
-    )
-    relax_parser.add_argument(
-        "-c",
-        "--comment",
-        type = str,
-        default = "relax",
-        help = "Comment."
-    )
+
 
     
-    # scf
-    scf_parser = subparser.add_parser(
+    # Scf by vasp
+    vasp_scf_parser = subparser.add_parser(
         "vasp_scf",
         help = "Scf by vasp.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    scf_parser.add_argument(
-        "--encut",
-        type = int,
-        default = 0,
-        help = "ENCUT"
-    )
-    scf_parser.add_argument(
-        "--pot",
-        type = str,
-        default = "auto",
-        nargs = "+",
-        help = "POTCAR type, eg Li_sv or V"
-    )
-    scf_parser.add_argument(
-        "--spin",
-        action = "store_true",
-        help = "Add spin (default FM)."
-    )
-    scf_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )
-    scf_parser.add_argument(
+    subparserList.append(vasp_scf_parser)
+    vasp_scf_parser.add_argument(
         "-p",
         "--pressure",
         type = float,
         default = 0.0,
         help = "Pressure"
     )
-    scf_parser.add_argument(
-        "-fd",
-        "--fermiDirac",
-        type = float,
-        default = -1,
-        help = "F-D smearing for electron enthalpy."
-    )
-    scf_parser.add_argument(
-        "--fun",
-        type = str,
-        default = "gga",
-        choices = ["gga", "ggau", "hse"],
-        help = "Functional."
-    )
-    scf_parser.add_argument(
-        "-u",
-        type = str,
-        nargs = 2,
-        default = None,
-        help = "Atom for GGA+U and Ueff."
-    )
-    scf_parser.add_argument(
-        "--fElectron",
-        action = "store_true",
-        default = None,
-        help = "f electron for GGA+U."
-    )
-    scf_parser.add_argument(
-        "-q",
-        "--queue",
-        type = str,
-        default = "9242opa!",
-        help = "Node name."
-    )
-    scf_parser.add_argument(
-        "-n",
-        "--nodes",
-        type = int,
-        default = "24",
-        help = "Number of cores."
-    )
-    scf_parser.add_argument(
-        "-c",
-        "--comment",
-        type = str,
-        default = "scf",
-        help = "Comment."
-    )
-
     
-    # band
-    band_parser = subparser.add_parser(
+
+    # Band by vasp
+    vasp_band_parser = subparser.add_parser(
         "band",
         help = "Band by vasp, default is gga.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    band_parser.add_argument(
-        "--encut",
-        type = int,
-        default = 0,
-        help = "ENCUT"
-    )
-    band_parser.add_argument(
-        "--pot",
-        type = str,
-        default = "auto",
-        nargs = "+",
-        help = "POTCAR type, eg Li_sv or V"
-    )
-    band_parser.add_argument(
-        "-p",
-        "--pressure",
-        type = float,
-        default = 0.0,
-        help = "Pressure"
-    ) 
-    band_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )  
-    band_parser.add_argument(
-        "--spin",
-        action = "store_true",
-        help = "Add spin (only FM)."
-    )
-    band_parser.add_argument(
-        "--fun",
-        type = str,
-        default = "gga",
-        choices = ["gga", "ggau", "hse"],
-        help = "Functional for band."
-    )
-    band_parser.add_argument(
-        "--fElectron",
-        action = "store_true",
-        help = "f electron for GGA+U."
-    )
-    band_parser.add_argument(
-        "-u",
-        type = str,
-        nargs = 2,
-        help = "Atom for GGA+U and Ueff."
-    )
-    band_parser.add_argument(
-        "-fd",
-        "--fermiDirac",
-        type = int,
-        default = -1,
-        help = "F-D smearing for electron enthalpy."
-    )
+    subparserList.append(vasp_band_parser)
     
 
-    # dos
-    dos_parser = subparser.add_parser(
+    # DOS by vasp
+    vasp_dos_parser = subparser.add_parser(
         "dos",
         help = "Dos by vasp, default is gga.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    dos_parser.add_argument(
-        "--encut",
-        type = int,
-        default = 0,
-        help = "ENCUT"
-    )
-    dos_parser.add_argument(
-        "--pot",
-        type = str,
-        default = "auto",
-        nargs = "+",
-        help = "POTCAR type, eg 'Li_sv' or 'V Se'"
-    )
-    dos_parser.add_argument(
-        "-p",
-        "--pressure",
-        type = float,
-        default = 0.0,
-        help = "Pressure"
-    ) 
-    dos_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )  
-    dos_parser.add_argument(
-        "--spin",
-        action = "store_true",
-        help = "Add spin (only FM)."
-    )
-    dos_parser.add_argument(
-        "--fun",
-        type = str,
-        default = "gga",
-        choices = ["gga", "ggau", "hse"],
-        help = "Functional for dos."
-    )
-    dos_parser.add_argument(
-        "--fElectron",
-        action = "store_true",
-        help = "f electron for GGA+U."
-    )
-    dos_parser.add_argument(
-        "-u",
-        type = str,
-        nargs = 2,
-        help = "Atom for GGA+U and Ueff."
-    )
-    dos_parser.add_argument(
-        "-fd",
-        "--fermiDirac",
-        type = int,
-        default = -1,
-        help = "F-D smearing for electron enthalpy."
-    )
+    subparserList.append(vasp_dos_parser)
     
     
-    # elf
-    elf_parser = subparser.add_parser(
+    # ELF by vasp
+    vasp_elf_parser = subparser.add_parser(
         "elf",
         help = "Elf by vasp.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    elf_parser.add_argument(
-        "--encut",
-        type = int,
-        default = 0,
-        help = "ENCUT"
-    )
-    elf_parser.add_argument(
-        "--pot",
-        type = str,
-        default = "auto",
-        nargs = "+",
-        help = "POTCAR type, eg Li_sv or V"
-    )
-    elf_parser.add_argument(
-        "--spin",
-        action = "store_true",
-        help = "Add spin (default FM)."
-    )
-    elf_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )
-    elf_parser.add_argument(
-        "-p",
-        "--pressure",
-        type = float,
-        default = 0.0,
-        help = "Pressure"
-    )
-    elf_parser.add_argument(
-        "--fun",
-        type = str,
-        default = "gga",
-        choices = ["gga", "ggau"],
-        help = "Functional."
-    )
-    elf_parser.add_argument(
-        "-u",
-        type = str,
-        nargs = 2,
-        default = None,
-        help = "Atom for GGA+U and Ueff."
-    )
-    elf_parser.add_argument(
-        "--fElectron",
-        action = "store_true",
-        default = None,
-        help = "f electron for GGA+U."
-    )
-    
-    # ph
-    ph_parser = subparser.add_parser(
+    subparserList.append(vasp_elf_parser)
+
+
+    # Ph by vasp + phonopy
+    vasp_ph_parser = subparser.add_parser(
         "vasp_ph",
         help = "Ph by vasp + phonopy.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    ph_parser.add_argument(
-        "--encut",
-        type = int,
-        default = 0,
-        help = "ENCUT"
-    )
-    ph_parser.add_argument(
-        "--pot",
-        type = str,
-        default = "auto",
-        nargs = "+",
-        help = "POTCAR type, eg Li_sv or V"
-    )
-    ph_parser.add_argument(
-        "--spin",
-        action = "store_true",
-        help = "Add spin (default FM)."
-    )
-    ph_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )
-    ph_parser.add_argument(
-        "-fd",
-        "--fermiDirac",
-        type = int,
-        default = -1,
-        help = "F-D smearing for electron enthalpy."
-    )
-    ph_parser.add_argument(
+    subparserList.append(vasp_ph_parser)
+    vasp_ph_parser.add_argument(
         "-k",
         "--kpoints",
         type = int,
@@ -446,7 +119,7 @@ def parse_args():
         default = [3, 3, 3],
         help = "KPOINTS mesh."
     )
-    ph_parser.add_argument(
+    vasp_ph_parser.add_argument(
         "-d",
         "--dim",
         type = int,
@@ -454,130 +127,58 @@ def parse_args():
         default = [2, 2, 2],
         help = "Super cell size."
     )
-    ph_parser.add_argument(
-        "--fun",
-        type = str,
-        default = "gga",
-        choices = ["gga", "ggau", "hse"],
-        help = "Functional."
+
+
+    # MD by vasp
+    vasp_md_parser = subparser.add_parser(
+        "vasp_md",
+        help = "AIMD by vasp.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    ph_parser.add_argument(
-        "-u",
-        type = str,
+    subparserList.append(vasp_md_parser)
+    vasp_md_parser.add_argument(
+        "-t",
+        "--temperature",
+        type = float,
         nargs = 2,
-        default = None,
-        help = "Atom for GGA+U and Ueff."
-    )
-    ph_parser.add_argument(
-        "--fElectron",
-        action = "store_true",
-        default = None,
-        help = "f electron for GGA+U."
-    )
-    ph_parser.add_argument(
-        "-q",
-        "--queue",
-        type = str,
-        default = "9242opa!",
-        help = "Node name."
-    )
-    ph_parser.add_argument(
-        "-n",
-        "--nodes",
+        default = [300, 300],
+        help = "TEBEG and TEEND for vasp."
+        )
+    vasp_md_parser.add_argument(
+        "-k",
+        "--kpoints",
         type = int,
-        default = "24",
-        help = "Number of cores."
+        nargs = 3,
+        default = [1, 1, 1],
+        help = "KPOINTS mesh."
     )
-    ph_parser.add_argument(
-        "-c",
-        "--comment",
-        type = str,
-        default = "ph",
-        help = "Comment."
+    vasp_md_parser.add_argument(
+        "-d",
+        "--dim",
+        type = int,
+        nargs = 3,
+        default = [3, 3, 3],
+        help = "Super cell size."
     )
 
-    # md
-    # COHP
-    cohp_parser = subparser.add_parser(
+
+    # COHP by vasp and lobster
+    vasp_cohp_parser = subparser.add_parser(
         "vasp_cohp",
         help = "COHP by vasp and lobster.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    cohp_parser.add_argument(
-        "--spin",
-        action = "store_true",
-        help = "Add spin (default FM)."
-    )
-    cohp_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )
-    cohp_parser.add_argument(
-        "--pot",
-        type = str,
-        default = "auto",
-        nargs = "+",
-        help = "POTCAR type, eg Li_sv / Li_sv In_d"
-    )
-    cohp_parser.add_argument(
-        "--encut",
-        type = int,
-        default = 0,
-        help = "ENCUT"
-    )
-    cohp_parser.add_argument(
-        "-q",
-        "--queue",
-        type = str,
-        default = "9242opa!",
-        help = "Node name."
-    )
-    cohp_parser.add_argument(
-        "-n",
-        "--nodes",
-        type = int,
-        default = "24",
-        help = "Number of cores."
-    )
-    cohp_parser.add_argument(
-        "-c",
-        "--comment",
-        type = str,
-        default = "cohp",
-        help = "Comment."
-    )
-    cohp_parser.add_argument(
-        "--fun",
-        type = str,
-        default = "gga",
-        choices = ["gga", "ggau", "hse"],
-        help = "Functional."
-    )
-    cohp_parser.add_argument(
-        "-u",
-        type = str,
-        nargs = 2,
-        default = None,
-        help = "Atom for GGA+U and Ueff."
-    )
-    cohp_parser.add_argument(
-        "--fElectron",
-        action = "store_true",
-        default = None,
-        help = "f electron for GGA+U."
-    )
+    subparserList.append(vasp_cohp_parser)
 
-    # fermi
-    # summary (relax, zpe, electride, free energy)
     
-    # ELPH 
+    # ELPH by QE
     elph_parser = subparser.add_parser(
         "elph",
         help = "Elph by QE.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
+    subparserList.append(elph_parser)
+
     elph_parser.add_argument(
         "-f",
         type = str,
@@ -604,15 +205,9 @@ def parse_args():
         default = 100.0,
         help = "ENCUT (Ry)."
     )
-    elph_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )
     
 
-    # qe_relax
+    # Relax by QE
     qerelax_parser = subparser.add_parser(
         "qerelax",
         help = "Relax by qe.",
@@ -637,12 +232,6 @@ def parse_args():
         help = "Add spin (default FM)."
     )
     qerelax_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )
-    qerelax_parser.add_argument(
         "-fd",
         "--fermiDirac",
         type = int,
@@ -657,7 +246,7 @@ def parse_args():
     )
 
 
-    # QE scf
+    # Scf by QE
     qescf_parser = subparser.add_parser(
         "qescf",
         help = "Scf by QE.",
@@ -675,12 +264,6 @@ def parse_args():
         help = "Add spin (default FM)."
     )
     qescf_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
-    )
-    qescf_parser.add_argument(
         "-p",
         "--pressure",
         type = float,
@@ -696,17 +279,11 @@ def parse_args():
     )
 
 
-    # dmft
+    # DMFT by EDMFT
     dmft_parser = subparser.add_parser(
         "dmft",
         help = "Dmft by EDMFT",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
-    dmft_parser.add_argument(
-        "-ns",
-        "--notSub",
-        action = "store_true",
-        help = "Only generate the input file, not sub."
     )
     dmft_parser.add_argument(
         "-fd",
@@ -723,6 +300,83 @@ def parse_args():
         help = "Functional."
     )
 
+
+
+    for item in subparserList:
+        comment = item.prog.split()[-1]
+        item.add_argument(
+            "-ns",
+            "--notSub",
+            action = "store_true",
+            help = "Only generate the input file, not sub."
+        )
+        item.add_argument(
+            "-q",
+            "--queue",
+            type = str,
+            default = "9242opa!",
+            help = "Node name."
+        )
+        item.add_argument(
+            "-n",
+            "--nodes",
+            type = int,
+            default = "24",
+            help = "Number of cores."
+        )
+        item.add_argument(
+            "-c",
+            "--comment",
+            type = str,
+            default = comment,
+            help = "Comment."
+        )
+        if comment.startswith("vasp"):
+            item.add_argument(
+                "--encut",
+                type = int,
+                default = 0,
+                help = "ENCUT"
+            )
+            item.add_argument(
+                "--pot",
+                type = str,
+                default = "auto",
+                nargs = "+",
+                help = "POTCAR type, eg Li_sv or V"
+            )
+            item.add_argument(
+                "--spin",
+                action = "store_true",
+                help = "Add spin (default FM)."
+            )
+            item.add_argument(
+                "--fun",
+                type = str,
+                default = "gga",
+                choices = ["gga", "ggau", "hse"],
+                help = "Functional."
+            )
+            item.add_argument(
+                "-u",
+                type = str,
+                nargs = 2,
+                default = None,
+                help = "Atom for GGA+U and Ueff."
+            )
+            item.add_argument(
+                "--fElectron",
+                action = "store_true",
+                default = None,
+                help = "f electron for GGA+U."
+            )
+            item.add_argument(
+                "-fd",
+                "--fermiDirac",
+                type = int,
+                default = -1,
+                help = "F-D smearing for electron enthalpy."
+            )
 
     parsed_args = parser.parse_args()
     if parsed_args.command is None:

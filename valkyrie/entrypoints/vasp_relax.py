@@ -1,4 +1,4 @@
-import os, shutil
+import os
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
 from .. import __shell__, run_vasp, run_vasp_opt
