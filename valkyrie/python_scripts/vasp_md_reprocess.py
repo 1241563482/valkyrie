@@ -41,7 +41,9 @@ time = time[:len(result)]
 for i in range(shape[1]):
     plt.plot(time, result[:, i], label=Atom[i])
 plt.ylim(0, np.max(result))
+plt.title(os.getcwd()[24:])
 plt.legend()
+
 plt.savefig('fig.png',dpi=300)
 
 plt.yscale('log')
