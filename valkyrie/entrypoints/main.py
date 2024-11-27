@@ -79,7 +79,7 @@ def parse_args():
 
     # Band by vasp
     vasp_band_parser = subparser.add_parser(
-        "band",
+        "vasp_band",
         help = "Band by vasp, default is gga.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
@@ -88,7 +88,7 @@ def parse_args():
 
     # DOS by vasp
     vasp_dos_parser = subparser.add_parser(
-        "dos",
+        "vasp_dos",
         help = "Dos by vasp, default is gga.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )

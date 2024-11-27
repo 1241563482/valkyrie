@@ -40,7 +40,9 @@ DIM = {dim[0]} {dim[1]} {dim[2]}
 PRIMITIVE_AXES = Auto
 BAND = Auto
 FORCE_SETS = READ
-FORCE_CONSTANTS= WRITE"""
+FORCE_CONSTANTS= WRITE
+# EIGENVECTORS = .TRUE. # For visualizaiotn of phonon modes
+"""
     with open("band.conf", "w") as file:
         file.write(band_conf)
 

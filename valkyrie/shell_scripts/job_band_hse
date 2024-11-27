@@ -1,17 +1,17 @@
 rm -f CHG* WAVECAR KPOINTS
 
-cp INCAR-scf INCAR
-cp KPOINTS-scf KPOINTS
+cp INCAR_scf INCAR
+cp KPOINTS_scf KPOINTS
 __TASK__
-cp OSZICAR OSZICAR-scf
-cp OUTCAR OUTCAR-scf
+cp OSZICAR OSZICAR_scf
+cp OUTCAR OUTCAR_scf
 
-cp INCAR-band INCAR
-cp KPOINTS-band KPOINTS
+cp INCAR_band INCAR
+cp KPOINTS_band KPOINTS
 __TASK__
-cp OSZICAR OSZICAR-band
-cp OUTCAR OUTCAR-band
-cp vasprun.xml vasprun.xml-band
+cp OSZICAR OSZICAR_band
+cp OUTCAR OUTCAR_band
+cp vasprun.xml vasprun.xml_band
 echo -e "252\n2" | vaspkit # Band+TDOS
 echo -e "254\n2\nall" | vaspkit #PBand
 
