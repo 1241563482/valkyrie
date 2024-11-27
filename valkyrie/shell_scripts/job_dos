@@ -1,12 +1,12 @@
-cp INCAR-scf INCAR
+cp INCAR_scf INCAR
 __TASK__
-cp OSZICAR OSZICAR-scf
-cp OUTCAR OUTCAR-scf
+cp OSZICAR OSZICAR_scf
+cp OUTCAR OUTCAR_scf
 
-cp INCAR-dos INCAR
+cp INCAR_dos INCAR
 __TASK__
-cp OSZICAR OSZICAR-dos
-cp OUTCAR OUTCAR-dos
+cp OSZICAR OSZICAR_dos
+cp OUTCAR OUTCAR_dos
 echo -e "111\n1" | vaspkit # TDOS
 echo -e "113\nall\n1" | vaspkit # PDOS
 
