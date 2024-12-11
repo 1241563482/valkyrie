@@ -35,7 +35,10 @@ for line in lines:
         print(f"POTIM = {potim}")
 
 # plot
-time = np.linspace(0,nsw*potim/1000,int(nsw/nblock-1))
+try:
+    time = np.linspace(0,nsw*potim/1000,int(nsw/nblock-1))
+else:
+    time = np.linspace(0,nsw*potim/1000,int(nsw))
 time = time[:len(result)]
 
 for i in range(shape[1]):
