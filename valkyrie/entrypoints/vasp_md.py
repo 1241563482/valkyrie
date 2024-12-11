@@ -34,8 +34,8 @@ PSTRESS = {pressure}
 TEBEG = {tBegin}
 TEEND = {tEnd}
 
-NBLOCK = 5
-KBLOCK = 4
+#NBLOCK = 5
+#KBLOCK = 4
 NPAR = 8
 """
     with open("INCAR", "w") as file:
