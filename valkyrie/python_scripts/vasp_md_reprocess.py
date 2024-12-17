@@ -35,10 +35,10 @@ for line in lines:
         print(f"POTIM = {potim}")
 
 # plot
-try:
-    time = np.linspace(0,nsw*potim/1000,int(nsw/nblock-1))
-else:
-    time = np.linspace(0,nsw*potim/1000,int(nsw))
+#try:
+#    time = np.linspace(0,nsw*potim/1000,int(nsw/nblock-1))
+#except:
+time = np.linspace(0, nsw*potim/1000, int(nsw))
 time = time[:len(result)]
 
 for i in range(shape[1]):
@@ -49,7 +49,7 @@ plt.legend()
 
 plt.savefig('fig.png',dpi=300)
 
-plt.yscale('log')
-plt.ylim(0.01,300)
-plt.legend()
-plt.savefig('fig-log.png',dpi=300)
+#plt.yscale('log')
+#plt.ylim(0.01,300)
+#plt.legend()
+#plt.savefig('fig-log.png',dpi=300)
