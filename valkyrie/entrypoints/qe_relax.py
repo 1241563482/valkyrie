@@ -1,41 +1,77 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 12 13:08:07 2023
-
-@author: zyj
-"""
-
-import os, shutil, sys, math
-from Input import input_qe_pot, input_vasp_relax
-from Input import get_info, poscar2qe, input_qe_relax
-from Calculators import job
-from ase.io import read
+import os
 import numpy as np
+from ..input import get_info
+from ..shell_scripts import job
+from .. import __shell__, run_pw, qe_pot_path
+from ase.io import read
+from ..input import poscar2qe, input_qe_pot
+
+def gen_INPUT(encut, pressure, spin, k, nat, ntyp, cell, pos, pot, optcell, **kwargs):
+    if optcell == False:
+        CELL = f"""&CELL
+    press = {pressure}  !kbar
+    press_conv_thr = 0.02
+    cell_dynamics = 'bfgs'
+/
+"""
+    else:
+        CELL = f"""&CELL
+    cell_dofree = 2Dxy
+    cell_dynamics = 'bfgs'
+/
+"""
+    
+    relax_in = f"""&CONTROL
+    calculation = 'vc-relax' , prefix = 'pwscf'
+    pseudo_dir = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
+    outdir = './tmp'
+    forc_conv_thr = 1.0d-7
+    etot_conv_thr = 1.0d-7
+/
+&SYSTEM
+    ibrav= 0, nat= {nat}, ntyp= {ntyp},  
+    occupations = 'smearing', smearing = 'mp', degauss = 0.02
+    ecutwfc = {encut}
+/
+&ELECTRONS
+    electron_maxstep = 100
+    conv_thr = 1.0d-11
+!    diagonalization = 'cg'
+/
+&IONS
+    ion_dynamics='bfgs'
+/
+{CELL}
+ATOMIC_SPECIES
+{pot}
+K_POINTS automatic
+{k[0]} {k[1]} {k[2]} 0 0 0
+
+{cell}
+{pos}
+"""
+
+    with open("relax.in", "w") as file:
+        print(relax_in, file = file)
+    print("<=> Valkyrie: Kmesh for relax.in: {} {} {}".format(k[0], k[1], k[2]))
+    return 0
 
 
-def relax(args, __shell__, __python__, __work__):
-    ##### Start Parameters #####
-    pressure = args.pressure
-    spin = args.spin
-    not_sub = args.not_sub
-    fd = args.fermi_dirac
-    q = args.q
-    n = 24 if args.n is None else args.n
-    comment = "relax" if args.comment is None else args.comment
-    symmetry = args.symmetry
-    optcell = args.optcell
-    ##### End Parameters #####
-
-
-    # POSCAR
-    poscar = read("POSCAR")
-    formula = poscar.get_chemical_formula()
-    if not os.path.exists("POSCAR"):
+def main(*args, queue = "9242opa!", nodes = 24, comment = "qe_relax", notSub = False,
+         pressure = 0, pot = "auto", encut = 100,
+         spin = False,
+         optcell = False,
+         fermiDirac = -1,
+         fun = "gga", u = "None", fElectron = False,
+         **kwargs):
+    
+    try:
+        ntyp, nat, cell, pos = poscar2qe.read_poscar("POSCAR")
+        poscar = read("POSCAR")
+        formula = poscar.get_chemical_formula()
+    except:
         raise Exception("No POSCAR file found at current path.")
-    if symmetry != None:
-        os.system("phonopy --symmetry --tolerance={} | grep space | head -1".format(symmetry))
-        shutil.copy2("PPOSCAR", "POSCAR")
-    ntyp, nat, cell, pos = poscar2qe.read_poscar("POSCAR")
+    
 
     # K points
     atom_size = [ max(poscar.get_positions()[:,i]) - min(poscar.get_positions()[:,i]) for i in [0, 1, 2] ]
@@ -49,30 +85,25 @@ def relax(args, __shell__, __python__, __work__):
 
     # POTCAR
     pot = input_qe_pot.get_pot("POSCAR")
-    # ENCUT
-    encut = args.encut
     # INCAR
-    input_qe_relax.relax(pressure * 10, encut, k, nat, ntyp, cell, pos, pot, optcell)
+    gen_INPUT(**locals())
     
 
     # Job and Sub
-    job.gen_job("job", "{}/job_qe_relax".format(__shell__))
-    job.control_job("job", q, n, comment)
-    if not_sub == True:
-        print("<=> Valkyrie: Only generate input file.")
-    else:
-        job.sub("job")
+    job.gen_job(job="job", job_file="{}/job_qe_relax".format(__shell__), task=run_pw)
+    job.control_job("job", queue, nodes, comment)
+    print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
+    print(f"<=> Valkyrie: QE relax for {formula} under the pressure of {pressure} GPa, ENCUT={encut}Ry.")
+    print(f"<=> Valkyrie: Potential: {pot.split()[-1]}")
 
     # Output
     if optcell == True:
-        print("<=> Valkyrie: Relax for {} with cell_dofree, ENCUT = {}, POTCAR = {}."\
-            .format(formula, encut, pot.split()[-1]))
+        print("<=> Valkyrie: QE relax for {} with cell_dofree, ENCUT={}Ry, Potential={}.".format(poscar, encut, pot))
         if pressure != 0.0:
             print("\033[0;31;40m", "\b<=> WARNING: Pressure and cell_dofree tags can not use together!", "\033[0m")
             print("\033[0;31;40m", "\b<=> WARNING: The Pressure tag is ignored!", "\033[0m")
-    else:
-        print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
-                .format(formula, pressure, encut, pot.split()[-1]))
         
     return 0
 
+if __name__ == "__main__":
+    main()

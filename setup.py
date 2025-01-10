@@ -16,7 +16,7 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         "numpy",     
-        "ase",
+        "ase==3.22",
         "matplotlib",
         "phonopy",
         "periodictable"

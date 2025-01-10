@@ -19,12 +19,13 @@
     ion_dynamics='bfgs'
 /
 &CELL
-    cell_dofree = 2Dxy
+    press = 0.0  !kbar
+    press_conv_thr = 0.02
     cell_dynamics = 'bfgs'
 /
 
 ATOMIC_SPECIES
-In 114.818 In.pbe-dn-rrkjus_psl.0.2.2.UPF
+C 12.011 C.pbe-n-kjpaw_psl.1.0.0.UPF
 
 K_POINTS automatic
 13 13 9 0 0 0
@@ -35,7 +36,7 @@ CELL_PARAMETERS angstrom
 0.00000000000000 0.00000000000000 4.98579870000000
 
 ATOMIC_POSITIONS angstrom
-In 0.0000000000 0.0000000000 0.0000000000 
-In 1.6297352700 1.6297352700 2.4928993500 
+C 0.0000000000 0.0000000000 0.0000000000 
+C 1.6297352700 1.6297352700 2.4928993500 
 
 

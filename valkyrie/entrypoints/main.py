@@ -97,7 +97,7 @@ def parse_args():
     
     # ELF by vasp
     vasp_elf_parser = subparser.add_parser(
-        "elf",
+        "vasp_elf",
         help = "Elf by vasp.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
@@ -171,74 +171,75 @@ def parse_args():
     subparserList.append(vasp_cohp_parser)
 
     
-    # ELPH by QE
-    elph_parser = subparser.add_parser(
-        "elph",
-        help = "Elph by QE.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
-    subparserList.append(elph_parser)
+    ## ELPH by QE
+    #elph_parser = subparser.add_parser(
+    #    "elph",
+    #    help = "Elph by QE.",
+    #    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    #)
+    #subparserList.append(elph_parser)
 
-    elph_parser.add_argument(
-        "-f",
-        type = str,
-        default = "POSCAR",
-        help="POSCAR file."
-    )
-    elph_parser.add_argument(
-        "--qmesh",
-        type = int,
-        nargs = 3,
-        default = [4, 4, 4],
-        help = "Q mesh."
-    )
-    elph_parser.add_argument(
-        "-k",
-        type = int,
-        nargs = 3,
-        default = [16, 16, 16],
-        help = "K mesh."
-    )
-    elph_parser.add_argument(
-        "--encut",
-        type = float,
-        default = 100.0,
-        help = "ENCUT (Ry)."
-    )
+    #elph_parser.add_argument(
+    #    "-f",
+    #    type = str,
+    #    default = "POSCAR",
+    #    help="POSCAR file."
+    #)
+    #elph_parser.add_argument(
+    #    "--qmesh",
+    #    type = int,
+    #    nargs = 3,
+    #    default = [4, 4, 4],
+    #    help = "Q mesh."
+    #)
+    #elph_parser.add_argument(
+    #    "-k",
+    #    type = int,
+    #    nargs = 3,
+    #    default = [16, 16, 16],
+    #    help = "K mesh."
+    #)
+    #elph_parser.add_argument(
+    #    "--encut",
+    #    type = float,
+    #    default = 100.0,
+    #    help = "ENCUT (Ry)."
+    #)
     
 
     # Relax by QE
-    qerelax_parser = subparser.add_parser(
-        "qerelax",
+    qe_relax_parser = subparser.add_parser(
+        "qe_relax",
         help = "Relax by qe.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    qerelax_parser.add_argument(
+    subparserList.append(qe_relax_parser)
+    qe_relax_parser.add_argument(
         "-p",
         "--pressure",
         type = float,
         default = 0.0,
         help = "Pressure"
     )
-    qerelax_parser.add_argument(
+    qe_relax_parser.add_argument(
         "--encut",
         type = int,
         default = 100,
         help = "ENCUT (Ry)"
     )
-    qerelax_parser.add_argument(
+    qe_relax_parser.add_argument(
         "--spin",
         action = "store_true",
         help = "Add spin (default FM)."
     )
-    qerelax_parser.add_argument(
+    qe_relax_parser.add_argument(
         "-fd",
         "--fermiDirac",
         type = int,
         default = -1,
         help = "F-D smearing for electron enthalpy."
     )
-    qerelax_parser.add_argument(
+    qe_relax_parser.add_argument(
         "-opt",
         "--optcell",
         action = "store_true",
@@ -387,7 +388,7 @@ def parse_args():
 def main():
     args = parse_args()
     dict_args = vars(args)
-
+    print(dict_args)
     if args.command:
         try:
             print(__picture__)

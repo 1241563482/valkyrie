@@ -12,6 +12,7 @@ PREC = Accurate
 EDIFF = 1e-6
 EDIFFG = -1e-3
 ENCUT = {encut}
+PSTRESS = {pressure}
 KSPACING = 0.157
 SIGMA = 0.030
 POTIM = 0.020

@@ -1,69 +1,69 @@
-import os, platform, shutil, sys
-from Input import input_vasp_potcar, input_vasp_elf
-from Input import get_info
-from Calculators import job
+import os, shutil
+from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
+from ..shell_scripts import job
 from ase.io import read
+from .. import __shell__, __python__, run_vasp
+from . import vasp_incar
 
 
-def elf(args, __shell__, __python__, __work__):
-    ##### Start Parameters #####
-    pressure = args.pressure
-    pot = args.pot
-    spin = args.spin
-    not_sub = args.not_sub
-    q = args.q
-    n = args.n
-    comment = args.comment
-    symmetry = args.symmetry
-    # Fun and gga+U part
-    fun = args.fun
-    if fun == "ggau":
-        if args.u is not None:
-            u_atom = args.u[0]
-            u_value = args.u[1]
-            if float(u_value) <= 0:
-                raise Exception("Ueff must be positive.")
-            if args.f_electron == True:
-                lmaxmix = 6 
-            else:
-                lmaxmix = 4
-        else:
-            raise Exception("Missing -u tag from input")
-    else:
-        u_atom = None
-        u_value = None
-        lmaxmix = None  
-    ##### End Parameters #####
+def gen_INCAR(encut, spin, fermiDirac, fun, u, fElectron, **kwargs):
+    incar_elf=f"""# INCAR for elf
+ISMEAR = 0
+EDIFF = 1E-7
+EDIFFG = -0.001
+SIGMA = 0.05
+IBRION = -1
+NSW = 0
+ISIF = 2
+ENCUT = {encut}
+PREC = Accurate
+KSPACING = 0.157
+NPAR = 2
+#KPAR = 2
+NELM = 120
+LELF = .True.
+LCHARG = .False.
+LWAVE = .False.
+"""
+    with open("INCAR", "w") as file:
+        file.write(incar_elf)
+
+    vasp_incar.modify_INCAR(file       =   ["INCAR"],
+                            spin       =   spin, 
+                            fermiDirac =   fermiDirac,
+                            fun        =   fun, 
+                            u          =   u,
+                            fElectron  =   fElectron
+                            )
 
 
-    # POSCAR
-    poscar = read("POSCAR").get_chemical_formula()
-    if not os.path.exists("POSCAR"):
+def main(*args, queue = "9242opa!", nodes = 24, comment = "elf", notSub = False,
+         pressure = 0, pot = "auto", encut = 0,
+         spin = False,
+         fermiDirac = -1,
+         fun = "gga", u = "None", fElectron = False,
+         **kwargs):
+    try:
+        poscar = read("POSCAR").get_chemical_formula()
+    except:
         raise Exception("No POSCAR file found at current path.")
-    if symmetry != None:
-        os.system("phonopy --symmetry --tolerance={} | grep space | head -1".format(symmetry))
-        shutil.copy2("PPOSCAR", "POSCAR")
-    # POTCAR
-    input_vasp_potcar.potcar(pot)
-    # ENCUT
-    encut = get_info.get_encut(args.encut)
-    # INCAR
-    input_vasp_elf.elf(encut, pressure, spin, fun, u_atom, u_value, lmaxmix)
-    # job
-    shutil.copy2("{}/job_elf".format(__shell__), "job")
+    input_vasp_potcar.potcar(pot) # POTCAR
+    encut = get_info.get_encut(encut) # ENCUT
+    gen_INCAR(**locals()) # INCAR
     shutil.copy2("{}/vasp_elf_electride.py".format(__python__), "vasp_elf_electride.py")
 
-    # Job and Sub
-    job.gen_job("job", "{}/job_scf".format(__shell__))
-    job.control_job("job", q, n, comment)
-    if not_sub == True:
-        print("<=> Valkyrie: Only generate input file.")
-    else:
-        job.sub("job")
 
-    print("<=> Valkyrie: ELF for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
+    # Job and sub
+    job.gen_job(job = "job", job_file = "{}/job_elf".format(__shell__), task = run_vasp)
+    job.control_job("job", queue, nodes, comment)
+    print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
+    print("<=> Valkyrie: Scf for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\
         .format(poscar, pressure, encut, pot))
 
     return 0
+
+
+if __name__ == "__main__":
+    main()
 
 

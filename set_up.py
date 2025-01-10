@@ -25,3 +25,6 @@ export I_MPI_FABRICS=shm
 run_vasp = "mpiexec.hydra vasp_std"
 run_vasp_opt = "mpiexec.hydra vasprelax"
 run_vasp_gam = "mpiexec.hydra vasp_gam"
+run_pw = "/fsa/home/js_zhuyj/software/QE/qe-7.3.1/bin/pw.x"
+
+qe_pot_path = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'

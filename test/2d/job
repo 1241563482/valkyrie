@@ -1,5 +1,5 @@
 #!/bin/sh
-#BSUB -J relax
+#BSUB -J vasp_elf
 #BSUB -n 24
 #BSUB -q 9242opa!
 
@@ -9,23 +9,21 @@ module load ips/2018u4
 export I_MPI_ADJUST_REDUCE=3
 export I_MPI_FABRICS=shm
 
-# Head and environment and mpirun -np $LSB_DJOB_NUMPROC will auto generate
-mpirun -np $LSB_DJOB_NUMPROC vasprelax
-cp CONTCAR POSCAR
-cp POSCAR POSCAR1
-NN=`grep "in kB" OUTCAR  | wc -l`
-echo "relax 1 calculated with $NN generation" >> log
-for i in `seq 2 10`
-do
-   if [ $NN -gt 5 ]
-   then
-   mpirun -np $LSB_DJOB_NUMPROC vasprelax
-   NN=`grep "in kB" OUTCAR  | wc -l`
-   cp CONTCAR POSCAR
-   cp POSCAR POSCAR$i
-   echo "relax $i calculated with $NN generation" >> log
-   else
-   break
-   fi
-done
+
+mpiexec.hydra vasp_std
+
+#result=`grep NGX OUTCAR | head -1`
+#NGX=$(echo "$result" | awk '{print $5}')
+#NGX=$(echo "$NGX * 3" | bc)
+#NGY=$(echo "$result" | awk '{print $8}')
+#NGY=$(echo "$NGY * 3" | bc)
+#NGZ=$(echo "$result" | awk '{print $11}')
+#NGZ=$(echo "$NGZ * 3" | bc)
+#
+#echo "NGX = $NGX" >> INCAR
+#echo "NGY = $NGY" >> INCAR
+#echo "NGZ = $NGZ" >> INCAR
+#
+#mpirun -np ${LSB_DJOB_NUMPROC} vasp_std
+#python vasp_elf_electride.py
 
