@@ -39,6 +39,28 @@ def parse_args():
     subparser = parser.add_subparsers(title="Valid subcommands", dest="command")
     subparserList = []
 
+    keep_parser = subparser.add_parser(
+        "keep",
+        help = "Keep some files, delete others.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    keep_parser.add_argument(
+        "--keepFiles",
+        type = str,
+        default = [],
+        nargs = "+",
+        help = "Files to keep."
+    ) 
+    keep_parser.add_argument(
+        "--task",
+        type = str,
+        default = None,
+        choices = ["vasp_relax", "vasp_scf", "vasp_elf", "vasp_md"],
+        help = "Task to handle."
+    )
+
+
+
     # Relax by vasp
     vasp_relax_parser = subparser.add_parser(
         "vasp_relax",

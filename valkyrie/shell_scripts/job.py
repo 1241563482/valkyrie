@@ -2,12 +2,14 @@ import sys, os
 sys.path.append('../')
 from set_up import *
 
-def gen_job(*args, job = "job", job_file = None, task = run_vasp, **kwargs):
+def gen_job(*args, job = "job", job_file = None, task = run_vasp, inputFile = None, **kwargs):
     with open(job_file, "r") as file:
         lines = file.readlines()
         for i, line in enumerate(lines):
             if "__TASK__" in line:
                 lines[i] = lines[i].replace("__TASK__", task)
+                if inputFile:
+                    lines[i] += inputFile
         body = ''.join(lines)
     with open(job, "w") as file:
         print(job_head, file = file)

@@ -7,9 +7,11 @@ from ase.io import read
 from ..input import poscar2qe, input_qe_pot
 
 def gen_INPUT(encut, pressure, spin, k, nat, ntyp, cell, pos, pot, optcell, **kwargs):
+    nspin = 2 if spin else 1
+
     if optcell == False:
         CELL = f"""&CELL
-    press = {pressure}  !kbar
+    press = {pressure*10}  !kbar
     press_conv_thr = 0.02
     cell_dynamics = 'bfgs'
 /
@@ -32,6 +34,7 @@ def gen_INPUT(encut, pressure, spin, k, nat, ntyp, cell, pos, pot, optcell, **kw
     ibrav= 0, nat= {nat}, ntyp= {ntyp},  
     occupations = 'smearing', smearing = 'mp', degauss = 0.02
     ecutwfc = {encut}
+    nspin = {nspin}
 /
 &ELECTRONS
     electron_maxstep = 100
@@ -90,7 +93,7 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "qe_relax", notSub = F
     
 
     # Job and Sub
-    job.gen_job(job="job", job_file="{}/job_qe_relax".format(__shell__), task=run_pw)
+    job.gen_job(job="job", job_file="{}/job_qe_relax".format(__shell__), task=run_pw, inputFile="< relax.in")
     job.control_job("job", queue, nodes, comment)
     print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
     print(f"<=> Valkyrie: QE relax for {formula} under the pressure of {pressure} GPa, ENCUT={encut}Ry.")
