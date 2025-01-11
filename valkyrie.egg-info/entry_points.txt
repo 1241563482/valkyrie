@@ -1,0 +1,2 @@
+[console_scripts]
+val = valkyrie.entrypoints.main:main

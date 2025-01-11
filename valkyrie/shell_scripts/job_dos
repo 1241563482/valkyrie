@@ -1,0 +1,15 @@
+cp INCAR_scf INCAR
+__TASK__
+cp OSZICAR OSZICAR_scf
+cp OUTCAR OUTCAR_scf
+
+cp INCAR_dos INCAR
+__TASK__
+cp OSZICAR OSZICAR_dos
+cp OUTCAR OUTCAR_dos
+echo -e "111\n1" | vaspkit # TDOS
+echo -e "113\nall\n1" | vaspkit # PDOS
+
+python vasp_dos_sum_spd.py
+
+rm -f CHG* WAVECAR

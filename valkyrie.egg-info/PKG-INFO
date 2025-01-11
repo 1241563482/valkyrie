@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: valkyrie
+Version: 0.0.0
+Author: Yijie Zhu
+Author-email: zhuyijie@smail.nju.edu.cn
+Requires-Python: >=3.8
+Requires-Dist: numpy
+Requires-Dist: ase

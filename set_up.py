@@ -8,9 +8,9 @@ sub_command = "bsub <"
 
 
 job_head = """#!/bin/sh
-#BSUB -J ph
-#BSUB -n 12
-#BSUB -q 9242opa!
+#BSUB -J Bilibili@yijiezhu
+#BSUB -n 114514
+#BSUB -q APEX legends never die
 """
 
 
@@ -22,26 +22,9 @@ export I_MPI_FABRICS=shm
 """
 
 
-__mpirun__ = "mpirun -np \$LSB_DJOB_NUMPROC"   # A \ needs to set before the $
-__work__ = os.getcwd()
+run_vasp = "mpiexec.hydra vasp_std"
+run_vasp_opt = "mpiexec.hydra vasprelax"
+run_vasp_gam = "mpiexec.hydra vasp_gam"
+run_pw = "mpiexec.hydra /fsa/home/js_zhuyj/software/QE/qe-7.3.1/bin/pw.x -npool 4 "
 
-
-### Comment this part for others ###
-host_name = subprocess.run("echo $USER", shell=True, capture_output=True)
-host_name = host_name.stdout.strip().decode('utf-8')
-if host_name == "jiansun":
-    __shell__ = "/share/home/jiansun/zyj/val/shell_scripts"
-    __python__ = "/share/home/jiansun/zyj/val/python_scripts"
-elif host_name == "js_zhuyj":
-    __shell__ = "/fsa/home/js_zhuyj/valkyrie/shell_scripts"
-    __python__ = "/fsa/home/js_zhuyj/valkyrie/python_scripts"
-elif host_name == "yijiezhu":
-    __shell__ = "/home/yijiezhu/valkyrie/shell_scripts"
-    __python__ = "/home/yijiezhu/valkyrie/python_scripts"
-### Comment this part for others ###
-
-
-# For others, comment the above lines and set the __shell__ and __python__ path
-#__shell__ = "/path/to/shell/scripts"
-#__python__ = "/path/to/python/scripts"
-
+qe_pot_path = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'

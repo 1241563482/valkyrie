@@ -1,16 +1,5 @@
-#!/bin/sh
-#BSUB -J vasp_elf
-#BSUB -n 24
-#BSUB -q 9242opa!
 
-
-source activate magus-new
-module load ips/2018u4
-export I_MPI_ADJUST_REDUCE=3
-export I_MPI_FABRICS=shm
-
-
-mpiexec.hydra vasp_std
+__TASK__
 
 #result=`grep NGX OUTCAR | head -1`
 #NGX=$(echo "$result" | awk '{print $5}')
@@ -26,4 +15,3 @@ mpiexec.hydra vasp_std
 #
 #mpirun -np ${LSB_DJOB_NUMPROC} vasp_std
 #python vasp_elf_electride.py
-

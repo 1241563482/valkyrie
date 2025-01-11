@@ -1,3 +1,0 @@
-
-MPIRUN pw.x -npool 4 < relax.in
-

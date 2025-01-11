@@ -1,0 +1,11 @@
+cp INCAR_scf INCAR
+#cp -f KPOINTS_scf KPOINTS
+__TASK__
+
+cp INCAR_band INCAR
+cp KPATH.in KPOINTS
+__TASK__
+echo -e "211\n1" | vaspkit
+echo -e "213\n1\nall" | vaspkit
+
+rm -f CHG* WAVECAR
