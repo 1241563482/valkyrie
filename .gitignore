@@ -1,0 +1,21 @@
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Packaging artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test and tool caches
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Local temporary files
+DOS_Ef.txt
+tb.txt

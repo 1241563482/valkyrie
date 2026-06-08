@@ -1,5 +1,0 @@
-numpy
-ase==3.22
-matplotlib
-phonopy
-periodictable
