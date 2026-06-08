@@ -330,89 +330,98 @@ def get_min_elf(data,site):
 ###### Main ######
 ##################
 
-if os.path.exists("summary.dat"):
-    os.remove("summary.dat")
-if os.path.exists("Electride.dat"):
-    os.remove("Electride.dat")
+def main():
+    global total_atom_numbers, atom_position_list, Nx, Ny, Nz
+    global criteria_for_position, length_x, length_y, length_z, V
+    global already_counted, x_left, x_right, y_left, y_right, z_left, z_right
 
-# Get the POSCAR information and ELF data.
-total_atom_numbers, atom_position_list, Nx, Ny, Nz = get_atom_information()
-data = get_elf()
-criteria_for_position = 0.8
+    if os.path.exists("summary.dat"):
+        os.remove("summary.dat")
+    if os.path.exists("Electride.dat"):
+        os.remove("Electride.dat")
 
-# Find the sites with ELF > criteria_for_volume.
-positions_candidate = [] 
-for i in range(Nx):
-    for j in range(Ny):
-        for k in range(Nz):
-            if if_electride_candidate(data, [i,j,k]) == 1:
-                positions_candidate.append([i/(Nx-1),j/(Ny-1),k/(Nz-1)])
+    # Get the POSCAR information and ELF data.
+    total_atom_numbers, atom_position_list, Nx, Ny, Nz = get_atom_information()
+    data = get_elf()
+    criteria_for_position = 0.8
+
+    # Find the sites with ELF > criteria_for_volume.
+    positions_candidate = [] 
+    for i in range(Nx):
+        for j in range(Ny):
+            for k in range(Nz):
+                if if_electride_candidate(data, [i,j,k]) == 1:
+                    positions_candidate.append([i/(Nx-1),j/(Ny-1),k/(Nz-1)])
 
 
-length_x, length_y, length_z, V = get_axis_length()
+    length_x, length_y, length_z, V = get_axis_length()
 
-# Find the position of the electride.
-electride=[]
-for i in positions_candidate:
-    if distance(atom_position_list, i) == 1:
-        i = correction_x(data,i)
-        i = correction_y(data,i)
-        i = correction_z(data,i)
-        atom_position_list = np.vstack((atom_position_list, np.array(i)))
-        electride.append(i)
-if len(electride)==0:
-    print("No electride found in this system!")
+    # Find the position of the electride.
+    electride=[]
+    for i in positions_candidate:
+        if distance(atom_position_list, i) == 1:
+            i = correction_x(data,i)
+            i = correction_y(data,i)
+            i = correction_z(data,i)
+            atom_position_list = np.vstack((atom_position_list, np.array(i)))
+            electride.append(i)
+    if len(electride)==0:
+        print("No electride found in this system!")
+        with open("Electride.dat","a") as file:
+            print("Summary:\t0 0 0 0", file=file)
+        with open("summary.dat", "a") as g:
+            print(0, V, 0, file = g)
+        sys.exit()
+
+
+    # Calculate the radius and volume of each electride.
+    print("\nThe x,y,z axis lengths are: (Ansgtrom)\n {}, {}, {}\n".format(length_x,length_y,length_z))
+    volume=[]
+    electride_V_checked=[]
+    already_counted = []
+    for i in electride:
+        criteria_for_volume = get_min_elf(data,i)
+        x_left, x_right, radius_x = get_radius_x(data, i, criteria_for_volume[0])
+        y_left, y_right, radius_y = get_radius_y(data, i, criteria_for_volume[1])
+        z_left, z_right, radius_z = get_radius_z(data, i, criteria_for_volume[2])
+        volume_i = get_volume(data, criteria_for_volume)
+        print(Nx*Ny*Nz, len(already_counted))
+        if volume_i > V/3:  # Exclude the free electron gas.
+            continue
+        volume.append(volume_i)
+        electride_V_checked.append(i)
+        print("For electride at {}, Rx, Ry, Rz are:".format(i), "(Ansgtrom)")
+        print(radius_x, radius_y, radius_z)
+        print("The volume is",volume[-1],"(Ansgtrom^3)\n")
+
+    if len(electride_V_checked)==0:
+        print("No electride found in this system!")
+        with open("Electride.dat","a") as file:
+            print("Summary:\t0 0 0 0", file=file)
+        with open("summary.dat", "a") as g:
+            print(0, V, 0, file = g)
+        sys.exit()
+
+
+    print("!!!NOTE!!!\nThe criteria for judging the electride volume is ELF >", max(criteria_for_volume))
+
+
+    if os.path.exists("Electride.dat"):
+        os.remove("Electride.dat")
+
     with open("Electride.dat","a") as file:
-        print("Summary:\t0 0 0 0", file=file)
-    with open("summary.dat", "a") as g:
-        print(0, V, 0, file = g)
-    sys.exit()
-
-
-# Calculate the radius and volume of each electride.
-print("\nThe x,y,z axis lengths are: (Ansgtrom)\n {}, {}, {}\n".format(length_x,length_y,length_z))
-volume=[]
-electride_V_checked=[]
-already_counted = []
-for i in electride:
-    criteria_for_volume = get_min_elf(data,i)
-    x_left, x_right, radius_x = get_radius_x(data, i, criteria_for_volume[0])
-    y_left, y_right, radius_y = get_radius_y(data, i, criteria_for_volume[1])
-    z_left, z_right, radius_z = get_radius_z(data, i, criteria_for_volume[2])
-    volume_i = get_volume(data, criteria_for_volume)
-    print(Nx*Ny*Nz, len(already_counted))
-    if volume_i > V/3:  # Exclude the free electron gas.
-        continue
-    volume.append(volume_i)
-    electride_V_checked.append(i)
-    print("For electride at {}, Rx, Ry, Rz are:".format(i), "(Ansgtrom)")
-    print(radius_x, radius_y, radius_z)
-    print("The volume is",volume[-1],"(Ansgtrom^3)\n")
-
-if len(electride_V_checked)==0:
-    print("No electride found in this system!")
-    with open("Electride.dat","a") as file:
-        print("Summary:\t0 0 0 0", file=file)
-    with open("summary.dat", "a") as g:
-        print(0, V, 0, file = g)
-    sys.exit()
-
-
-print("!!!NOTE!!!\nThe criteria for judging the electride volume is ELF >", max(criteria_for_volume))
-
-
-if os.path.exists("Electride.dat"):
-    os.remove("Electride.dat")
-
-with open("Electride.dat","a") as file:
-    print("\t\t\tNumber\t\tTotal_volume\t\tAverage_volume", file = file)
-    print("Summary:\t", len(electride_V_checked), '\t\t', sum(volume), '\t\t',np.mean(volume), file = file)
-    print("The volumes for each electrides are:", end=" ", file=file)
-    for i in volume:
-        print(i, end=' ', file=file)
-    print("",file=file)
-    print("The volume of the cell is {} (Angstrom^3)".format(V), file = file)
+        print("\t\t\tNumber\t\tTotal_volume\t\tAverage_volume", file = file)
+        print("Summary:\t", len(electride_V_checked), '\t\t', sum(volume), '\t\t',np.mean(volume), file = file)
+        print("The volumes for each electrides are:", end=" ", file=file)
+        for i in volume:
+            print(i, end=' ', file=file)
+        print("",file=file)
+        print("The volume of the cell is {} (Angstrom^3)".format(V), file = file)
     
-with open("summary.dat", "a") as g:
-    print(sum(volume), V, sum(volume)/V, file = g)    
+    with open("summary.dat", "a") as g:
+        print(sum(volume), V, sum(volume)/V, file = g)    
 
+
+
+if __name__ == "__main__":
+    main()

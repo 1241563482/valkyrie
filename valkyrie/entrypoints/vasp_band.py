@@ -1,7 +1,9 @@
 import os, shutil, subprocess
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
-from .. import __shell__, run_vasp, run_vasp_opt
+from .. import run_vasp, run_vasp_opt
+from ..io_utils import comment_out_key, remove_files
+from ..resources import shell_template
 from ase.io import read
 from . import vasp_incar
 
@@ -90,23 +92,23 @@ def main(*args, queue="9242opa!", nodes=24, comment="band", notSub=False,
     
     # KPOINTS and job
     if fun == "gga" or fun == "ggau":
-        os.system("vaspkit -task 303 > /dev/null 2>&1")
-        job.gen_job(job="job", job_file="{}/job_band".format(__shell__), task=run_vasp)
+        subprocess.run(["vaspkit", "-task", "303"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        job.gen_job(job="job", job_file=shell_template("job_band"), task=run_vasp)
     
 
     elif fun == "hse":
         if not os.path.isfile("KPATH.in"):
-            subprocess.run("vaspkit -task 303", text=True, shell=True, stdout=subprocess.DEVNULL)
+            subprocess.run(["vaspkit", "-task", "303"], check=True, text=True, stdout=subprocess.DEVNULL)
         tag="251\n2\n0.04\n0.06"
-        subprocess.run("vaspkit", input=tag, text=True, shell=True, stdout=subprocess.DEVNULL) # KPOINTS for hse band
+        subprocess.run(["vaspkit"], input=tag, text=True, check=True, stdout=subprocess.DEVNULL) # KPOINTS for hse band
         os.rename("KPOINTS", "KPOINTS_band")
         with open("KPOINTS_band", "r") as file:
             numbers=file.readline().strip().split()
 
         input_vasp_kpoints.kpoints(numbers[1], numbers[2], numbers[3]) # KPOINTS for scf
         os.rename("KPOINTS", "KPOINTS_scf")
-        os.system("sed -i 's/KSPACING/#KSPACING/g' INCAR_scf")
-        job.gen_job(job="job", job_file="{}/job_band_hse".format(__shell__), task=run_vasp)
+        comment_out_key("INCAR_scf", "KSPACING")
+        job.gen_job(job="job", job_file=shell_template("job_band_hse"), task=run_vasp)
     
 
     # Job and Sub
@@ -114,7 +116,7 @@ def main(*args, queue="9242opa!", nodes=24, comment="band", notSub=False,
     print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
     print("<=> Valkyrie: Running band for {}, ENCUT={}, POTCAR={}, fun={}."\
           .format(poscar, encut, pot, fun))
-    os.system("rm -f Brillouin_Zone_3D.jpg INCAR KPOINTS PLOT.in SYMMETRY PRIMCELL.vasp")
+    remove_files("Brillouin_Zone_3D.jpg", "INCAR", "KPOINTS", "PLOT.in", "SYMMETRY", "PRIMCELL.vasp")
     return 0
 
 

@@ -1,7 +1,3 @@
-from ase.dft import kpoints
-from ase.io import read
-import shutil
-from Calculators import job
 
 def scf(pressure: int,
           encut: int,
@@ -15,7 +11,7 @@ def scf(pressure: int,
     
     scf_in = f"""&CONTROL
     calculation = 'scf' , prefix = 'pwscf'
-    pseudo_dir = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
+    pseudo_dir = '/fsb/home/jiansun/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
     outdir = './tmp'
     forc_conv_thr = 1.0d-7
     etot_conv_thr = 1.0d-7

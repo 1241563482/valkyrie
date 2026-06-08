@@ -1,8 +1,9 @@
 from ase.dft import kpoints
 from ase.io import read
-import shutil
-from Calculators import job
-from set_up import sub_command
+
+from valkyrie.config import sub_command
+from valkyrie.resources import copy_python_script, copy_shell_script, shell_template
+from valkyrie.shell_scripts import job
 
 def scf1(encut, k, nat, ntyp, cell, pos, pot):
     if k[2] == 1:
@@ -12,7 +13,7 @@ def scf1(encut, k, nat, ntyp, cell, pos, pot):
 
     scf1_in = """&CONTROL
     calculation = 'scf' , prefix = 'pwscf'
-    pseudo_dir = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
+    pseudo_dir = '/fsb/home/jiansun/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
     outdir = './tmp'
     forc_conv_thr = 1.0d-7
     etot_conv_thr = 1.0d-7
@@ -44,7 +45,7 @@ K_POINTS automatic
 def scf2(encut, k, nat, ntyp, cell, pos, pot):
     scf2 = """&CONTROL
     calculation = 'scf', prefix = 'pwscf'
-    pseudo_dir = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency' 
+    pseudo_dir = '/fsb/home/jiansun/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency' 
     outdir = './tmp'
     forc_conv_thr = 1.0d-7
     etot_conv_thr = 1.0d-7
@@ -184,7 +185,7 @@ ndos = 500
         print(matdyn_in_dos, file = file)
 
 
-def other_input(__shell__, __python__, __work__):
+def other_input(__shell__=None, __python__=None, __work__=None):
     q2r_in = """&input
 fildyn = 'pwscf.dyn'
 zasr = 'simple'
@@ -204,11 +205,11 @@ freq.ps
     with open("plotband.in", "w") as file:
         print(plotband_in, file = file)
 
-    shutil.copy("{}/qe_elph_alpha2F.py".format(__python__), "qe_alpha2F.py")
-    shutil.copy("{}/qe_elph_sumlambda.py".format(__python__), "sumlambda.py")
-    shutil.copy("{}/qe_elph_linewidth.sh".format(__shell__), "qe_elph_linewidth.sh")
-    job.gen_job("job", "{}/job_qe_elph_1".format(__shell__))
-    job.gen_job("job-elph", "{}/job_qe_elph_2".format(__shell__))
-    job.gen_job("job-re", "{}/job_qe_elph_reprocess".format(__shell__))
+    copy_python_script("qe_elph_alpha2F.py", "qe_alpha2F.py")
+    copy_python_script("qe_elph_sumlambda.py", "sumlambda.py")
+    copy_shell_script("qe_elph_linewidth.sh", "qe_elph_linewidth.sh")
+    job.gen_job(job="job", job_file=shell_template("job_qe_elph_1"))
+    job.gen_job(job="job-elph", job_file=shell_template("job_qe_elph_2"))
+    job.gen_job(job="job-re", job_file=shell_template("job_qe_elph_reprocess"))
 
 

@@ -1,0 +1,27 @@
+#!/bin/sh
+#BSUB -J vasp_dos
+#BSUB -n 24
+#BSUB -q 9242opa!
+
+
+source activate magus-new
+module load ips/2018u4
+export I_MPI_ADJUST_REDUCE=3
+export I_MPI_FABRICS=shm
+
+cp INCAR_scf INCAR
+mpiexec.hydra vasp_std
+cp OSZICAR OSZICAR_scf
+cp OUTCAR OUTCAR_scf
+
+cp INCAR_dos INCAR
+mpiexec.hydra vasp_std
+cp OSZICAR OSZICAR_dos
+cp OUTCAR OUTCAR_dos
+echo -e "111\n1" | vaspkit # TDOS
+echo -e "113\nall\n1" | vaspkit # PDOS
+
+python vasp_dos_sum_spd.py
+
+rm -f CHG* WAVECAR
+

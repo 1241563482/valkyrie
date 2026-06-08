@@ -45,8 +45,8 @@ def get_encut(encut_input):
 def get_input_manually(__work__, cal_path):
     files = os.listdir(__work__)
     for file in files:
-        if file.startwith("INCAR") or file.startwith("KPOINTS") or file.startwith("POTCAR")\
-        or file.startwith("job") or file.endwith(".sh") or file.endwith(".py"):                                                           
+        if file.startswith("INCAR") or file.startswith("KPOINTS") or file.startswith("POTCAR")\
+        or file.startswith("job") or file.endswith(".sh") or file.endswith(".py"):
             source_path = os.path.join(__work__, file)
             destination_path = os.path.join(cal_path, file)
             shutil.copy2(source_path, destination_path)

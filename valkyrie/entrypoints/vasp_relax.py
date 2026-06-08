@@ -1,7 +1,9 @@
 import os
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
-from .. import __shell__, run_vasp, run_vasp_opt
+from .. import run_vasp, run_vasp_opt
+from ..io_utils import comment_out_key
+from ..resources import shell_template
 from ase.io import read
 from . import vasp_incar
 
@@ -67,8 +69,8 @@ def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiD
     # KPOINTS and job
     if optcell:
         input_vasp_kpoints.kpoints_byhand(read("POSCAR"), ceiling = 50)
-        os.system("sed -i 's/KSPACING/#KSPACING/g' INCAR")
-        job.gen_job(job = "job", job_file = "{}/job_vasp_relax_optcell".format(__shell__), task = run_vasp_opt)
+        comment_out_key("INCAR", "KSPACING")
+        job.gen_job(job = "job", job_file = shell_template("job_vasp_relax_optcell"), task = run_vasp_opt)
         job.control_job("job", queue, nodes, comment)
         print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
         print("<=> Valkyrie: Relax for {} with vasprelax version, ENCUT = {}, POTCAR = {}."\
@@ -77,7 +79,7 @@ def main(*args, pressure = 0, pot = "auto", spin = False, notSub = False, fermiD
             print("\033[0;31;40m", "\b<=> WARNING: Pressure and optcell tags can not use together!", "\033[0m")
             print("\033[0;31;40m", "\b<=> WARNING: The Pressure tag is ignored!", "\033[0m")
     else:
-        job.gen_job(job = "job", job_file = "{}/job_vasp_relax".format(__shell__), task = run_vasp)
+        job.gen_job(job = "job", job_file = shell_template("job_vasp_relax"), task = run_vasp)
         job.control_job("job", queue, nodes, comment)
         print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
         print("<=> Valkyrie: Relax for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\

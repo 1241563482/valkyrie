@@ -1,5 +1,6 @@
 import shutil
-from Input import get_info
+
+from valkyrie.input import get_info
 
 def elf(encut, pressure, spin, fun, u_atom, u_value, lmaxmix):
     pressure = pressure * 10

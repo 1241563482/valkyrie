@@ -1,8 +1,9 @@
-import os, shutil
+from pathlib import Path
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
 from ase.io import read
-from .. import __shell__, __python__, run_vasp
+from .. import run_vasp
+from ..resources import copy_python_script, shell_template
 from . import vasp_incar
 
 
@@ -58,10 +59,10 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "cohp", notSub = False
          **kwargs):
     
     # POSCAR
+    if not Path("POSCAR").exists():
+        raise Exception("No POSCAR file found at current path.")
     poscar = read("POSCAR")
     chemical_formula = poscar.get_chemical_formula()
-    if not os.path.exists("POSCAR"):
-        raise Exception("No POSCAR file found at current path.")
     input_vasp_potcar.potcar(pot) # POTCAR
     encut = get_info.get_encut(encut) # ENCUT
     gen_INCAR(encut, spin, fun, u, fElectron) # INCAR
@@ -69,15 +70,15 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "cohp", notSub = False
 
 
     # Job and Sub
-    job.gen_job(job = "job", job_file = "{}/job_cohp".format(__shell__), task = run_vasp)
+    job.gen_job(job = "job", job_file = shell_template("job_cohp"), task = run_vasp)
     job.control_job("job", queue, nodes, comment)
     print(f"<=> Valkyrie: COHP for {chemical_formula} , ENCUT = {encut}, POTCAR = {pot}.")
     print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
 
 
     # Scripts
-    shutil.copy(f"{__python__}/vasp_cohp.py", "COHP.py")
-    shutil.copy(f"{__python__}/vasp_cohp_plot.py", "plot.py")
+    copy_python_script("vasp_cohp.py", "COHP.py")
+    copy_python_script("vasp_cohp_plot.py", "plot.py")
 
     return 0
 

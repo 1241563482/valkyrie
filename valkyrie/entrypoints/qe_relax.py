@@ -2,7 +2,8 @@ import os
 import numpy as np
 from ..input import get_info
 from ..shell_scripts import job
-from .. import __shell__, run_pw, qe_pot_path
+from .. import run_pw, qe_pot_path
+from ..resources import shell_template
 from ase.io import read
 from ..input import poscar2qe, input_qe_pot
 
@@ -25,7 +26,7 @@ def gen_INPUT(encut, pressure, spin, k, nat, ntyp, cell, pos, pot, optcell, **kw
     
     relax_in = f"""&CONTROL
     calculation = 'vc-relax' , prefix = 'pwscf'
-    pseudo_dir = '/fsa/home/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
+    pseudo_dir = '/fsb/home/jiansun/js_zhuyj/mypps/QE/SSSP_1.3.0_PBE_efficiency'
     outdir = './tmp'
     forc_conv_thr = 1.0d-7
     etot_conv_thr = 1.0d-7
@@ -93,7 +94,7 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "qe_relax", notSub = F
     
 
     # Job and Sub
-    job.gen_job(job="job", job_file="{}/job_qe_relax".format(__shell__), task=run_pw, inputFile="< relax.in")
+    job.gen_job(job="job", job_file=shell_template("job_qe_relax"), task=run_pw, inputFile="< relax.in")
     job.control_job("job", queue, nodes, comment)
     print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
     print(f"<=> Valkyrie: QE relax for {formula} under the pressure of {pressure} GPa, ENCUT={encut}Ry.")

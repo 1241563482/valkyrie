@@ -1,9 +1,12 @@
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
-from .. import __shell__, __python__, run_vasp_gam, run_vasp
+from .. import run_vasp_gam, run_vasp
+from ..io_utils import run_command
+from ..resources import copy_python_script, shell_template
 from ase.io import read
 from . import vasp_incar
-import os, shutil
+import subprocess
+from pathlib import Path
 
 
 def gen_INCAR(encut, pressure, spin, fermiDirac, fun, u, fElectron, tBegin, tEnd, **kwargs):
@@ -62,14 +65,13 @@ def main(*args, queue = "9242opa!", nodes = 48, comment = "vasp_MD", notSub = Fa
          **kwargs):
     
 
-    try:
-        os.system("phonopy -d --dim {} {} {} > /dev/null".format(*dim))
-        os.system("mv POSCAR POSCAR0")
-        os.system("mv SPOSCAR POSCAR")
-        poscar = read("POSCAR")
-        formula = poscar.get_chemical_formula()
-    except:
+    if not Path("POSCAR").exists():
         raise Exception("No POSCAR file found at current path.")
+    run_command(["phonopy", "-d", "--dim", *map(str, dim)], stdout=subprocess.DEVNULL)
+    Path("POSCAR").rename("POSCAR0")
+    Path("SPOSCAR").rename("POSCAR")
+    poscar = read("POSCAR")
+    formula = poscar.get_chemical_formula()
 
 
     input_vasp_potcar.potcar(pot) # POTCAR
@@ -80,12 +82,12 @@ def main(*args, queue = "9242opa!", nodes = 48, comment = "vasp_MD", notSub = Fa
     
 
     # Other input files
-    shutil.copy2("{}/vasp_md_MDdata.py".format(__python__), "MDdata.py")
-    shutil.copy2("{}/vasp_md_reprocess.py".format(__python__), "reprocess.py")
+    copy_python_script("vasp_md_MDdata.py", "MDdata.py")
+    copy_python_script("vasp_md_reprocess.py", "reprocess.py")
 
     # Job and sub
     task = run_vasp_gam if kpoints == [1, 1, 1] else run_vasp
-    job.gen_job(job = "job", job_file = "{}/job_vasp_md".format(__shell__), task = task)
+    job.gen_job(job = "job", job_file = shell_template("job_vasp_md"), task = task)
     job.control_job("job", queue, nodes, comment)
 
     print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")

@@ -1,11 +1,8 @@
-from ase.io import read, write
-from Input import poscar2qe, input_qe_elph
-from Input import input_qe_pot
-from Calculators import job
-import shutil
+from ..input import input_qe_elph, input_qe_pot, poscar2qe
+from ..shell_scripts import job
 
 
-def elph(args, __shell__, __python__, __work__):
+def elph(args, __shell__=None, __python__=None, __work__=None):
     # Parameters:
     poscar = args.f
     encut = args.encut

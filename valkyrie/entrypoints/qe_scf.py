@@ -1,63 +1,63 @@
-import os, shutil, sys, math
-from Input import input_qe_pot
-from Input import poscar2qe, input_qe_scf
-from Calculators import job
-from ase.io import read
+import shutil
+import subprocess
+from pathlib import Path
+
 import numpy as np
+from ase.io import read
+
+from .. import run_pw
+from ..input import input_qe_pot, input_qe_scf, poscar2qe
+from ..resources import shell_template
+from ..shell_scripts import job
 
 
-def scf(args, __shell__, __python__, __work__):
-    ##### Start Parameters #####
-    pressure = args.pressure
-    spin = args.spin
-    not_sub = args.not_sub
-    fd = args.fermi_dirac
-    q = args.q
-    n = 24 if args.n is None else args.n
-    comment = "relax" if args.comment is None else args.comment
-    symmetry = args.symmetry
-    ##### End Parameters #####
-
-
-    # POSCAR
-    poscar = read("POSCAR")
-    formula = poscar.get_chemical_formula()
-    if not os.path.exists("POSCAR"):
-        raise Exception("No POSCAR file found at current path.")
-    if symmetry != None:
-        os.system("phonopy --symmetry --tolerance={} | grep space | head -1".format(symmetry))
-        shutil.copy2("PPOSCAR", "POSCAR")
-    ntyp, nat, cell, pos = poscar2qe.read_poscar("POSCAR")
-
-    # K points
-    atom_size = [ max(poscar.get_positions()[:,i]) - min(poscar.get_positions()[:,i]) for i in [0, 1, 2] ]
-    cell_size = [ np.linalg.norm(poscar.cell[i]) for i in [0, 1, 2] ]
+def _kmesh_from_poscar(poscar):
+    atom_size = [max(poscar.get_positions()[:, i]) - min(poscar.get_positions()[:, i]) for i in [0, 1, 2]]
+    cell_size = [np.linalg.norm(poscar.cell[i]) for i in [0, 1, 2]]
     k = []
     for i in [0, 1, 2]:
-        if cell_size[i] - atom_size[i] >= 8: # If vacuum size >= 8A, then set the K-mesh as 1.
+        if cell_size[i] - atom_size[i] >= 8:
             k.append(1)
         else:
-            k.append( int( max(1, np.ceil(40 / cell_size[i]))) )
-    
-    # POTCAR
+            k.append(int(max(1, np.ceil(40 / cell_size[i]))))
+    return k
+
+
+def main(*args, queue="9242opa!", nodes=24, comment="qe_scf", notSub=False,
+         pressure=0, encut=100, spin=False, fermiDirac=-1, symmetry=None,
+         **kwargs):
+    if not Path("POSCAR").exists():
+        raise Exception("No POSCAR file found at current path.")
+
+    poscar = read("POSCAR")
+    formula = poscar.get_chemical_formula()
+    if symmetry is not None:
+        result = subprocess.run(
+            ["phonopy", "--symmetry", f"--tolerance={symmetry}"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        for line in result.stdout.splitlines():
+            if "space" in line.lower():
+                print(line)
+                break
+        shutil.copy2("PPOSCAR", "POSCAR")
+        poscar = read("POSCAR")
+
+    ntyp, nat, cell, pos = poscar2qe.read_poscar("POSCAR")
+    k = _kmesh_from_poscar(poscar)
     pot = input_qe_pot.get_pot("POSCAR")
-    # ENCUT
-    encut = args.encut
-    # INCAR
     input_qe_scf.scf(pressure * 10, encut, k, nat, ntyp, cell, pos, pot)
-    
 
-    # Job and Sub
-    job.gen_job("job", "{}/job_qe_scf".format(__shell__))
-    job.control_job("job", q, n, comment)
-    if not_sub == True:
-        print("<=> Valkyrie: Only generate input file.")
-    else:
-        job.sub("job")
+    job.gen_job(job="job", job_file=shell_template("job_qe_scf"), task=run_pw, inputFile="< scf.in")
+    job.control_job("job", queue, nodes, comment)
+    print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
 
-    # Output
     print("<=> Valkyrie: Scf for {} under the pressure of {} GPa, ENCUT = {} Ry, POTCAR = {}."\
         .format(formula, pressure, encut, pot.split()[-1]))
-        
     return 0
 
+
+if __name__ == "__main__":
+    main()

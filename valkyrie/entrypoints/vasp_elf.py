@@ -2,7 +2,8 @@ import os, shutil
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
 from ase.io import read
-from .. import __shell__, __python__, run_vasp
+from .. import run_vasp
+from ..resources import copy_python_script, shell_template
 from . import vasp_incar
 
 
@@ -50,11 +51,11 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "elf", notSub = False,
     input_vasp_potcar.potcar(pot) # POTCAR
     encut = get_info.get_encut(encut) # ENCUT
     gen_INCAR(**locals()) # INCAR
-    shutil.copy2("{}/vasp_elf_electride.py".format(__python__), "vasp_elf_electride.py")
+    copy_python_script("vasp_elf_electride.py", "vasp_elf_electride.py")
 
 
     # Job and sub
-    job.gen_job(job = "job", job_file = "{}/job_elf".format(__shell__), task = run_vasp)
+    job.gen_job(job = "job", job_file = shell_template("job_elf"), task = run_vasp)
     job.control_job("job", queue, nodes, comment)
     print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
     print("<=> Valkyrie: Scf for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\

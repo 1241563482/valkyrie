@@ -1,8 +1,8 @@
-import sys
-sys.path.append('../')
-from set_up import comment_startswith
-from set_up import core_number_startswith
-from set_up import node_name_startswith
+from valkyrie.config import (
+    comment_startswith,
+    core_number_startswith,
+    node_name_startswith,
+)
 
 
 def job_head(q, n, comment):

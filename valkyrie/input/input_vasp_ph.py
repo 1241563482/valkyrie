@@ -6,7 +6,8 @@ Created on Mon Dec  4 20:45:48 2023
 """
 
 import shutil
-from Input import get_info
+
+from valkyrie.input import get_info
 
 
 def ph(encut, dim, spin, fd, symmetry, fun, u_atom, u_value, lmaxmix):

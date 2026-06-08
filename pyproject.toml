@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "valkyrie"
+version = "0.1"
+description = "Valkyrie: APEX LEGENDS NEVER DIE"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Yijie Zhu", email = "zhuyijie@smail.nju.edu.cn"},
+]
+dependencies = [
+    "numpy",
+    "ase==3.22",
+    "matplotlib",
+    "phonopy",
+    "periodictable",
+]
+
+[project.urls]
+Homepage = "https://github.com/1241563482/valkyrie"
+
+[project.scripts]
+val = "valkyrie.entrypoints.main:main"
+
+[tool.setuptools.packages.find]
+include = ["valkyrie*"]
+
+[tool.setuptools.package-data]
+valkyrie = [
+    "shell_scripts/job_*",
+    "shell_scripts/*.sh",
+    "python_scripts/*.py",
+]

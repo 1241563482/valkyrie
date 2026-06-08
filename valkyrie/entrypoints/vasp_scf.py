@@ -1,7 +1,8 @@
 import os
 from ..input import input_vasp_potcar, get_info
 from ..shell_scripts import job
-from .. import __shell__, run_vasp
+from .. import run_vasp
+from ..resources import shell_template
 from ase.io import read
 from . import vasp_incar
 
@@ -54,7 +55,7 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "band", notSub = False
 
 
     # Job and sub
-    job.gen_job(job = "job", job_file = "{}/job_scf".format(__shell__), task = run_vasp)
+    job.gen_job(job = "job", job_file = shell_template("job_scf"), task = run_vasp)
     job.control_job("job", queue, nodes, comment)
     print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
     print("<=> Valkyrie: Scf for {} under the pressure of {} GPa, ENCUT = {}, POTCAR = {}."\

@@ -1,7 +1,9 @@
-import os, shutil
+import subprocess
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
-from .. import __shell__, run_vasp, __python__
+from .. import run_vasp
+from ..io_utils import run_command
+from ..resources import copy_python_script, shell_template
 from ase.io import read
 from . import vasp_incar
 
@@ -97,7 +99,7 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "ph", notSub = False,
         raise Exception("No POSCAR file found at current path.")
     
     # Super cell
-    os.system("phonopy -d --dim {} {} {} --tolerance {} > /dev/null".format(*dim, symmetry))
+    run_command(["phonopy", "-d", "--dim", *map(str, dim), "--tolerance", str(symmetry)], stdout=subprocess.DEVNULL)
 
     input_vasp_potcar.potcar(pot) # POTCAR
     encut = get_info.get_encut(encut) # ENCUT
@@ -107,14 +109,14 @@ def main(*args, queue = "9242opa!", nodes = 24, comment = "ph", notSub = False,
 
 
     # Other input files
-    shutil.copy2("{}/get_free_energy.py".format(__python__), "get_free_energy.py")
-    shutil.copy2("{}/vasp_ph_loop_in.py".format(__python__), "loop-in.py")
+    copy_python_script("get_free_energy.py", "get_free_energy.py")
+    copy_python_script("vasp_ph_loop_in.py", "loop-in.py")
     
 
     # Job and Sub
-    job.gen_job(job = "job", job_file = "{}/job_ph".format(__shell__), task = run_vasp)
+    job.gen_job(job = "job", job_file = shell_template("job_ph"), task = run_vasp)
     job.control_job("job", queue, nodes, comment)
-    print("<=> Valkyrie: Only generate input file.") if notSub else os.system("python loop-in.py")
+    print("<=> Valkyrie: Only generate input file.") if notSub else run_command(["python", "loop-in.py"])
 
     print("<=> Valkyrie: Ph for {}, ENCUT = {}, POTCAR = {}.".format(poscar, encut, pot))  
     print("<=> Valkyrie: Super cell is {} {} {}. KPOINTS are {} {} {}.".format(*dim, *kpoints))

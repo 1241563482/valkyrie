@@ -2,7 +2,9 @@ import os, shutil
 from ..input import input_vasp_potcar, get_info, input_vasp_kpoints
 from ..shell_scripts import job
 from ase.io import read
-from .. import __shell__, __python__, run_vasp
+from .. import run_vasp
+from ..io_utils import remove_files
+from ..resources import copy_python_script, shell_template
 from . import vasp_incar
 
 def gen_input(encut, spin, fun, fermiDirac, u, fElectron, **kwargs):
@@ -87,13 +89,13 @@ def main(*args, queue="9242opa!", nodes=24, comment="band", notSub=False,
 
 
     # job
-    job.gen_job(job="job", job_file="{}/job_dos".format(__shell__), task=run_vasp)
-    shutil.copy2("{}/vasp_dos_sum_spd.py".format(__python__), "vasp_dos_sum_spd.py")
+    job.gen_job(job="job", job_file=shell_template("job_dos"), task=run_vasp)
+    copy_python_script("vasp_dos_sum_spd.py", "vasp_dos_sum_spd.py")
     job.control_job("job", queue, nodes, comment)
     print("<=> Valkyrie: Only generate input file.") if notSub else job.sub("job")
 
     print("<=> Valkyrie: Running dos for {}, ENCUT = {}, POTCAR = {}, fun = {}.".format(poscar, encut, pot, fun))
-    os.system("rm -f Brillouin_Zone_3D.jpg INCAR KPOINTS PLOT.in SYMMETRY PRIMCELL.vasp")
+    remove_files("Brillouin_Zone_3D.jpg", "INCAR", "KPOINTS", "PLOT.in", "SYMMETRY", "PRIMCELL.vasp")
     return 0
 
 if __name__ == "__main__":

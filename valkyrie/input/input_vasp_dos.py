@@ -1,5 +1,6 @@
 import shutil
-from Input import get_info
+
+from valkyrie.input import get_info
 
 
 def dos(encut, pressure, spin, fd, fun, u_atom, u_value, lmaxmix):
