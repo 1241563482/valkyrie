@@ -11,15 +11,15 @@ from .resources import resource_dir
 
 
 __version__ = "0.1"
-__picture__ = f"""
+__picture__ = rf"""
                  _  _                  _
   /\   /\  __ _ | || | __ _   _  _ __ (_)  ___
-  \ \ / / / _` || || |/ /| | | || '__|| | / _ \\
+  \ \ / / / _` || || |/ /| | | || '__|| | / _ \
    \ V / | (_| || ||   < | |_| || |   | ||  __/
     \_/   \__,_||_||_|\_\ \__, ||_|   |_| \___|
             Version {__version__.ljust(5)}  |___/
                                 by Yijie Zhu
-"""
+""".strip("\n")
 
 # Backwards-compatible resource directory variables used by existing entrypoints.
 __shell__ = resource_dir("shell_scripts")
