@@ -86,6 +86,9 @@ Available subcommands:
 
 | Command | Description |
 | --- | --- |
+| `check` | Check the Python environment, package resources, configured paths, external tools, and local inputs. |
+| `show-config` | Show active Valkyrie configuration and resource paths. |
+| `status` | Summarize local calculation status from run metadata and VASP/QE output files. |
 | `keep` | Keep selected files and delete other regular files in the current directory. |
 | `vasp_relax` | Generate VASP relaxation inputs and job script. |
 | `vasp_scf` | Generate VASP SCF inputs and job script. |
@@ -198,6 +201,53 @@ val qescf -ns --encut 100
 ```
 
 `qescf` is kept as a backward-compatible alias. Prefer `qe_scf` for new workflows.
+
+## Diagnostics and Status
+
+Check the current Python environment, packaged resources, configured paths, external tools, and local `POSCAR`/`POTCAR` inputs:
+
+```bash
+val check
+val check --json
+val check --strict
+```
+
+Show the active Valkyrie configuration from `valkyrie/config.py` and packaged resource paths:
+
+```bash
+val show-config
+val show-config --json
+```
+
+Summarize the local calculation directory from recorded Valkyrie metadata and VASP/QE output files:
+
+```bash
+val status
+val status --json
+val status /path/to/calculation --engine vasp
+val status --history 5
+```
+
+`val status` is local-output-based. It reads files such as `OUTCAR`, `OUTCAR_scf`, `scf.out`, and `relax.out`; it does not query LSF or other schedulers yet.
+
+## Run Metadata
+
+Calculation commands automatically record the requested CLI parameters in the current directory:
+
+```text
+.valkyrie/run.json
+.valkyrie/run_history.jsonl
+```
+
+The latest invocation is stored in `run.json`, while `run_history.jsonl` appends one JSON record per command. This metadata is used by `val status` to show the last Valkyrie command for a calculation directory.
+
+Disable recording for one command by placing the global option before the subcommand:
+
+```bash
+val --no-record vasp_scf -ns
+```
+
+The metadata records requested CLI parameters and runtime context, not derived values such as automatically computed `ENCUT` or scheduler job IDs.
 
 ## Cleanup Helper
 

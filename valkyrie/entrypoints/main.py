@@ -1,10 +1,15 @@
 import argparse
 import importlib
+import sys
 
 from .. import __picture__, __version__
+from ..run_record import record_invocation
 
 
 COMMAND_MODULES = {
+    "check": "check",
+    "show-config": "show_config",
+    "status": "status",
     "keep": "keep",
     "vasp_relax": "vasp_relax",
     "vasp_scf": "vasp_scf",
@@ -112,10 +117,40 @@ def parse_args(argv=None):
         action="version",
         version=__version__,
     )
+    parser.add_argument(
+        "--no-record",
+        action="store_true",
+        help="Do not write .valkyrie run metadata for calculation commands.",
+    )
 
     subparser = parser.add_subparsers(title="Valid subcommands", dest="command")
     vasp_parsers = []
     common_parsers = []
+
+    check_parser = subparser.add_parser(
+        "check",
+        help="Check Valkyrie environment, resources, and local inputs.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    check_parser.add_argument("--json", dest="json_output", action="store_true", help="Print checks as JSON.")
+    check_parser.add_argument("--strict", action="store_true", help="Treat warnings as failures.")
+
+    show_config_parser = subparser.add_parser(
+        "show-config",
+        help="Show active Valkyrie configuration.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    show_config_parser.add_argument("--json", dest="json_output", action="store_true", help="Print config as JSON.")
+
+    status_parser = subparser.add_parser(
+        "status",
+        help="Summarize local calculation status.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    status_parser.add_argument("path", nargs="?", default=".", help="Calculation directory to inspect.")
+    status_parser.add_argument("--json", dest="json_output", action="store_true", help="Print status as JSON.")
+    status_parser.add_argument("--engine", choices=["auto", "vasp", "qe"], default="auto", help="Output engine to inspect.")
+    status_parser.add_argument("--history", type=int, default=0, help="Include the last N recorded run entries.")
 
     keep_parser = subparser.add_parser(
         "keep",
@@ -279,9 +314,14 @@ def load_command(command):
 def main(argv=None):
     args = parse_args(argv)
     if args.command:
-        print(__picture__)
+        if args.command not in {"check", "show-config", "status"}:
+            print(__picture__)
+        try:
+            record_invocation(args, argv=argv if argv is not None else sys.argv[1:])
+        except Exception:
+            pass
         command = load_command(args.command)
-        command(**vars(args))
+        return command(**vars(args))
 
 
 if __name__ == "__main__":

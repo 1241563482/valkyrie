@@ -19,3 +19,6 @@ htmlcov/
 # Local temporary files
 DOS_Ef.txt
 tb.txt
+
+# Valkyrie local run metadata
+.valkyrie/
