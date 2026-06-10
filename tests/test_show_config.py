@@ -14,6 +14,9 @@ class ShowConfigTest(unittest.TestCase):
         self.assertIn("paths", data)
         self.assertIn("run_vasp", data["executables"])
         self.assertIn("run_pw", data["executables"])
+        self.assertIn("run_abacus", data["executables"])
+        self.assertIn("abacus_pseudo_dir", data["paths"])
+        self.assertIn("abacus_orbital_dir", data["paths"])
 
     def test_collect_config_is_json_serializable(self):
         json.dumps(collect_config())

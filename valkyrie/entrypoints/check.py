@@ -23,6 +23,7 @@ SHELL_TEMPLATES = [
     "job_cohp",
     "job_qe_relax",
     "job_qe_scf",
+    "job_abacus_scf",
     "job_dmft",
 ]
 PYTHON_SCRIPTS = [
@@ -111,14 +112,15 @@ def check_resources():
 
 def check_configured_paths():
     results = []
-    for key in ["run_vasp", "run_vasp_opt", "run_vasp_gam", "run_pw"]:
+    for key in ["run_vasp", "run_vasp_opt", "run_vasp_gam", "run_pw", "run_abacus"]:
         executable = command_executable(getattr(config, key))
         results.append(check_executable(key, executable))
-    qe_path = Path(config.qe_pot_path)
-    if qe_path.exists():
-        results.append(check_item("qe_pot_path", "ok", "path exists", str(qe_path)))
-    else:
-        results.append(check_item("qe_pot_path", "warn", "path not found", str(qe_path)))
+    for key in ["qe_pot_path", "abacus_pseudo_dir", "abacus_orbital_dir"]:
+        path = Path(getattr(config, key))
+        if path.exists():
+            results.append(check_item(key, "ok", "path exists", str(path)))
+        else:
+            results.append(check_item(key, "warn", "path not found", str(path)))
     return results
 
 

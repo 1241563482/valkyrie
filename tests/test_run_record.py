@@ -30,6 +30,13 @@ class RunRecordTest(unittest.TestCase):
             self.assertEqual(load_latest_run(tmpdir)["command"], "vasp_scf")
             self.assertEqual(len(load_history(tmpdir)), 1)
 
+    def test_abacus_scf_is_recordable(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            args = argparse.Namespace(command="abacus_scf", no_record=False, nodes=24)
+            record = record_invocation(args, argv=["abacus_scf", "-ns"], cwd=tmpdir)
+            self.assertIsNotNone(record)
+            self.assertEqual(load_latest_run(tmpdir)["command"], "abacus_scf")
+
     def test_utility_commands_are_skipped(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             args = argparse.Namespace(command="status", no_record=False)

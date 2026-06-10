@@ -10,6 +10,7 @@ Valkyrie is a command-line toolkit for preparing and managing first-principles c
 
 - Generate VASP inputs for relaxation, SCF, band structure, DOS, ELF, phonon, AIMD, and COHP workflows.
 - Generate Quantum ESPRESSO relaxation and SCF inputs from `POSCAR`.
+- Generate ABACUS SCF `INPUT`, `KPT`, and `STRU` files from `POSCAR`.
 - Generate LSF job scripts from bundled templates.
 - Copy task-specific helper scripts into the calculation directory.
 - Provide safe cleanup helpers for calculation directories.
@@ -43,6 +44,7 @@ Depending on the command, Valkyrie expects the following external tools to be av
 
 - VASP executables, such as `vasp_std`, `vasp_gam`, or `vasprelax`
 - Quantum ESPRESSO `pw.x`
+- ABACUS executable and ABACUS pseudopotential/orbital directories
 - `vaspkit`
 - `phonopy`
 - `lobster`
@@ -68,6 +70,7 @@ val vasp_relax -ns
 val vasp_scf -ns
 val vasp_dos -ns
 val qe_relax -ns
+val abacus_scf -ns
 ```
 
 After checking the generated files, run the same command without `-ns` to submit the job:
@@ -99,8 +102,8 @@ Available subcommands:
 | `vasp_md` | Generate VASP AIMD supercell inputs and helper scripts. |
 | `vasp_cohp` | Generate VASP + lobster COHP workflow inputs. |
 | `qe_relax` | Generate Quantum ESPRESSO variable-cell relaxation input. |
-| `qescf` | Legacy alias for QE SCF input generation. |
 | `qe_scf` | Generate Quantum ESPRESSO SCF input. |
+| `abacus_scf` | Generate ABACUS SCF `INPUT`, `KPT`, `STRU`, and job script from `POSCAR`. |
 | `dmft` | Prepare a WIEN2k/EDMFT-style workflow. |
 
 ## Common Job Options
@@ -193,14 +196,32 @@ val qe_relax -ns --optcell
 
 ### SCF
 
-Both command names are supported:
-
 ```bash
 val qe_scf -ns --encut 100
-val qescf -ns --encut 100
 ```
 
-`qescf` is kept as a backward-compatible alias. Prefer `qe_scf` for new workflows.
+## ABACUS Workflows
+
+### SCF
+
+```bash
+val abacus_scf -ns
+val abacus_scf -ns -k 12 15 1
+val abacus_scf -ns --pp V=V.upf Se=Se.upf --basis V=V_gga_10au_100Ry_4s2p2d1f.orb Se=Se_gga_10au_100Ry_2s2p2d1f.orb
+```
+
+`abacus_scf` reads `POSCAR` and writes ABACUS `STRU`, `INPUT`, `KPT`, and `job` files. By default it looks for a local reference directory named `1/` and reuses defaults from `1/INPUT`, `1/KPT`, and `1/STRU` when present. CLI options override those reference values.
+
+Common options:
+
+- `--reference-dir`: reference ABACUS calculation directory, default `1`.
+- `--pseudo-dir`: ABACUS `pseudo_dir` written to `INPUT`.
+- `--orbital-dir`: ABACUS `orbital_dir` written to `INPUT`.
+- `--pp ELEMENT=FILE ...`: pseudopotential mapping written to `STRU`.
+- `--basis ELEMENT=FILE ...`: LCAO orbital mapping written to `STRU`.
+- `-k/--kpoints NX NY NZ`: K-point mesh for `KPT`.
+- `--ecutwfc`: ABACUS plane-wave cutoff.
+- `--no-soc`: disable SOC/noncollinear defaults inherited from the reference `INPUT`.
 
 ## Diagnostics and Status
 
@@ -272,6 +293,7 @@ val keep --task vasp_relax
 valkyrie/
 ├── entrypoints/       # CLI subcommands
 ├── input/             # Input-file generation helpers
+├── abacus_ase_io.py    # Standalone ASE/ABACUS IO helpers
 ├── python_scripts/    # Helper scripts copied into calculation directories
 ├── shell_scripts/     # Job templates and scheduler helper module
 ├── config.py          # Cluster/site defaults
@@ -305,7 +327,7 @@ python -m pip install -e .
 ## Notes and Limitations
 
 - Many defaults are site-specific and reflect the original cluster environment. Review `valkyrie/config.py` before production use.
-- Some workflows invoke external tools such as `vaspkit`, `phonopy`, `bsub`, or `init_lapw`; these must be installed separately.
+- Some workflows invoke external tools such as `vaspkit`, `phonopy`, `abacus`, `bsub`, or `init_lapw`; these must be installed separately.
 - `-ns/--notSub` is recommended for checking generated inputs before submitting jobs.
 - The project currently targets practical calculation setup rather than being a fully general workflow manager.
 

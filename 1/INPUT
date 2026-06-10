@@ -1,0 +1,29 @@
+INPUT_PARAMETERS
+# Created by Atomic Simulation Enviroment
+pseudo_dir                              /fsb/home/jiansun/js_zhuyj/mypps/abacus/ABACUS-orbitals/Dojo-NC-FR/Pseudopotential
+orbital_dir                             /fsb/home/jiansun/js_zhuyj/mypps/abacus/ABACUS-orbitals/Dojo-NC-FR/Orbitals_DZP
+calculation                             scf
+ecutwfc                                 120
+scf_thr                                 1e-06
+scf_nmax                                400
+out_chg                                 0
+cal_force                               1
+smearing_method                         gauss
+smearing_sigma                          0.01
+mixing_type                             broyden
+mixing_ndim                             10
+ks_solver                               genelpa
+basis_type                              lcao
+symmetry                                -1
+noncolin                                1
+lspinorb                                1
+nspin                                   4
+out_mul                                 True
+sc_mag_switch                           1
+sc_thr                                  1e-05
+nsc                                     400
+nsc_min                                 2
+alpha_trial                             0.01
+sccut                                   3
+vdw_method                              d3_0
+dft_functional                          pbe

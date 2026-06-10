@@ -16,6 +16,7 @@ class CheckTest(unittest.TestCase):
     def test_command_executable_skips_mpi_launcher(self):
         self.assertEqual(command_executable("mpiexec.hydra vasp_std"), "vasp_std")
         self.assertEqual(command_executable("mpiexec.hydra /path/to/pw.x -npool 4"), "/path/to/pw.x")
+        self.assertEqual(command_executable("mpiexec.hydra abacus"), "abacus")
 
     def test_check_executable_with_mocked_path(self):
         with mock.patch("shutil.which", return_value="/usr/bin/tool"):

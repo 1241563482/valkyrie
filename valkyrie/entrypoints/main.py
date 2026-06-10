@@ -20,8 +20,8 @@ COMMAND_MODULES = {
     "vasp_md": "vasp_md",
     "vasp_cohp": "vasp_cohp",
     "qe_relax": "qe_relax",
-    "qescf": "qe_scf",
     "qe_scf": "qe_scf",
+    "abacus_scf": "abacus_scf",
     "dmft": "dmft",
 }
 
@@ -262,18 +262,34 @@ def parse_args(argv=None):
     qe_relax_parser.add_argument("-fd", "--fermiDirac", type=int, default=-1, help="F-D smearing for electron enthalpy.")
     qe_relax_parser.add_argument("-opt", "--optcell", action="store_true", help="Constrained relax.")
 
-    for command_name in ["qescf", "qe_scf"]:
-        qescf_parser = subparser.add_parser(
-            command_name,
-            help="Scf by QE.",
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        )
-        common_parsers.append((qescf_parser, command_name))
-        qescf_parser.add_argument("--encut", type=int, default=100, help="ENCUT for QE")
-        qescf_parser.add_argument("--spin", action="store_true", help="Add spin (default FM).")
-        qescf_parser.add_argument("-p", "--pressure", type=float, default=0.0, help="Pressure")
-        qescf_parser.add_argument("-fd", "--fermiDirac", type=int, default=-1, help="F-D smearing for electron enthalpy.")
-        qescf_parser.add_argument("--symmetry", type=float, default=None, help="Symmetry tolerance for phonopy preprocessing.")
+    qe_scf_parser = subparser.add_parser(
+        "qe_scf",
+        help="Scf by QE.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    common_parsers.append((qe_scf_parser, "qe_scf"))
+    qe_scf_parser.add_argument("--encut", type=int, default=100, help="ENCUT for QE")
+    qe_scf_parser.add_argument("--spin", action="store_true", help="Add spin (default FM).")
+    qe_scf_parser.add_argument("-p", "--pressure", type=float, default=0.0, help="Pressure")
+    qe_scf_parser.add_argument("-fd", "--fermiDirac", type=int, default=-1, help="F-D smearing for electron enthalpy.")
+    qe_scf_parser.add_argument("--symmetry", type=float, default=None, help="Symmetry tolerance for phonopy preprocessing.")
+
+    abacus_scf_parser = subparser.add_parser(
+        "abacus_scf",
+        help="Generate ABACUS SCF inputs from POSCAR.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    common_parsers.append((abacus_scf_parser, "abacus_scf"))
+    abacus_scf_parser.add_argument("--poscar", default="POSCAR", help="Input POSCAR/CONTCAR file.")
+    abacus_scf_parser.add_argument("--reference-dir", default="1", help="Reference ABACUS directory for INPUT/KPT/STRU defaults.")
+    abacus_scf_parser.add_argument("--pseudo-dir", default=None, help="ABACUS pseudo_dir written to INPUT.")
+    abacus_scf_parser.add_argument("--orbital-dir", default=None, help="ABACUS orbital_dir written to INPUT.")
+    abacus_scf_parser.add_argument("--pp", nargs="+", default=None, help="Pseudopotential mapping, e.g. V=V.upf Se=Se.upf.")
+    abacus_scf_parser.add_argument("--basis", nargs="+", default=None, help="Numerical orbital mapping, e.g. V=V.orb Se=Se.orb.")
+    abacus_scf_parser.add_argument("-k", "--kpoints", type=int, nargs=3, default=None, help="ABACUS KPT mesh.")
+    abacus_scf_parser.add_argument("--ecutwfc", type=float, default=None, help="ABACUS ecutwfc.")
+    abacus_scf_parser.add_argument("--basis-type", default="lcao", help="ABACUS basis_type.")
+    abacus_scf_parser.add_argument("--no-soc", action="store_true", help="Disable SOC/noncollinear defaults from reference INPUT.")
 
     dmft_parser = subparser.add_parser(
         "dmft",

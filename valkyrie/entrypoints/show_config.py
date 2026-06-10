@@ -26,9 +26,12 @@ def collect_config():
             "run_vasp_opt": config.run_vasp_opt,
             "run_vasp_gam": config.run_vasp_gam,
             "run_pw": config.run_pw,
+            "run_abacus": config.run_abacus,
         },
         "paths": {
             "qe_pot_path": config.qe_pot_path,
+            "abacus_pseudo_dir": config.abacus_pseudo_dir,
+            "abacus_orbital_dir": config.abacus_orbital_dir,
             "shell_scripts": resource_dir("shell_scripts"),
             "python_scripts": resource_dir("python_scripts"),
         },

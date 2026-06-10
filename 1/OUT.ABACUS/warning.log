@@ -1,0 +1,275 @@
+ In SCAN_END, can't find: </PP_R> block.
+ In SCAN_END, can't find: </PP_RAB> block.
+ In SCAN_END, can't find: </PP_MESH> block.
+ In SCAN_END, can't find: </PP_NLCC> block.
+ In SCAN_END, can't find: </PP_LOCAL> block.
+ In SCAN_END, can't find: </PP_BETA.1> block.
+ In SCAN_END, can't find: </PP_BETA.2> block.
+ In SCAN_END, can't find: </PP_BETA.3> block.
+ In SCAN_END, can't find: </PP_BETA.4> block.
+ In SCAN_END, can't find: </PP_BETA.5> block.
+ In SCAN_END, can't find: </PP_BETA.6> block.
+ In SCAN_END, can't find: </PP_BETA.7> block.
+ In SCAN_END, can't find: </PP_BETA.8> block.
+ In SCAN_END, can't find: </PP_BETA.9> block.
+ In SCAN_END, can't find: </PP_BETA.10> block.
+ In SCAN_END, can't find: </PP_CHI.1> block.
+ In SCAN_END, can't find: </PP_CHI.2> block.
+ In SCAN_END, can't find: </PP_CHI.3> block.
+ In SCAN_END, can't find: </PP_CHI.4> block.
+ In SCAN_END, can't find: </PP_CHI.5> block.
+ In SCAN_END, can't find: </PP_CHI.6> block.
+ In SCAN_END, can't find: </PP_PSWFC> block.
+ In SCAN_END, can't find: </PP_RHOATOM> block.
+ In SCAN_END, can't find: </PP_RELWFC.1> block.
+ In SCAN_END, can't find: </PP_RELWFC.2> block.
+ In SCAN_END, can't find: </PP_RELWFC.3> block.
+ In SCAN_END, can't find: </PP_RELWFC.4> block.
+ In SCAN_END, can't find: </PP_RELWFC.5> block.
+ In SCAN_END, can't find: </PP_RELWFC.6> block.
+ In SCAN_END, can't find: </PP_RELBETA.1> block.
+ In SCAN_END, can't find: </PP_RELBETA.2> block.
+ In SCAN_END, can't find: </PP_RELBETA.3> block.
+ In SCAN_END, can't find: </PP_RELBETA.4> block.
+ In SCAN_END, can't find: </PP_RELBETA.5> block.
+ In SCAN_END, can't find: </PP_RELBETA.6> block.
+ In SCAN_END, can't find: </PP_RELBETA.7> block.
+ In SCAN_END, can't find: </PP_RELBETA.8> block.
+ In SCAN_END, can't find: </PP_RELBETA.9> block.
+ In SCAN_END, can't find: </PP_RELBETA.10> block.
+ In SCAN_END, can't find: </PP_SPIN_ORB> block.
+ In SCAN_END, can't find: </PP_R> block.
+ In SCAN_END, can't find: </PP_RAB> block.
+ In SCAN_END, can't find: </PP_MESH> block.
+ In SCAN_END, can't find: </PP_NLCC> block.
+ In SCAN_END, can't find: </PP_LOCAL> block.
+ In SCAN_END, can't find: </PP_BETA.1> block.
+ In SCAN_END, can't find: </PP_BETA.2> block.
+ In SCAN_END, can't find: </PP_BETA.3> block.
+ In SCAN_END, can't find: </PP_BETA.4> block.
+ In SCAN_END, can't find: </PP_BETA.5> block.
+ In SCAN_END, can't find: </PP_BETA.6> block.
+ In SCAN_END, can't find: </PP_BETA.7> block.
+ In SCAN_END, can't find: </PP_BETA.8> block.
+ In SCAN_END, can't find: </PP_BETA.9> block.
+ In SCAN_END, can't find: </PP_BETA.10> block.
+ In SCAN_END, can't find: </PP_CHI.1> block.
+ In SCAN_END, can't find: </PP_CHI.2> block.
+ In SCAN_END, can't find: </PP_CHI.3> block.
+ In SCAN_END, can't find: </PP_CHI.4> block.
+ In SCAN_END, can't find: </PP_CHI.5> block.
+ In SCAN_END, can't find: </PP_PSWFC> block.
+ In SCAN_END, can't find: </PP_RHOATOM> block.
+ In SCAN_END, can't find: </PP_RELWFC.1> block.
+ In SCAN_END, can't find: </PP_RELWFC.2> block.
+ In SCAN_END, can't find: </PP_RELWFC.3> block.
+ In SCAN_END, can't find: </PP_RELWFC.4> block.
+ In SCAN_END, can't find: </PP_RELWFC.5> block.
+ In SCAN_END, can't find: </PP_RELBETA.1> block.
+ In SCAN_END, can't find: </PP_RELBETA.2> block.
+ In SCAN_END, can't find: </PP_RELBETA.3> block.
+ In SCAN_END, can't find: </PP_RELBETA.4> block.
+ In SCAN_END, can't find: </PP_RELBETA.5> block.
+ In SCAN_END, can't find: </PP_RELBETA.6> block.
+ In SCAN_END, can't find: </PP_RELBETA.7> block.
+ In SCAN_END, can't find: </PP_RELBETA.8> block.
+ In SCAN_END, can't find: </PP_RELBETA.9> block.
+ In SCAN_END, can't find: </PP_RELBETA.10> block.
+ In SCAN_END, can't find: </PP_SPIN_ORB> block.
+ AUTO_SET NBANDS to 0
+ AUTO_SET NBANDS to 110
+ Grid_Technique::init_atoms_on_grid  warning : No atom on this sub-FFT-mesh.
+      Processor           Atom
+              1              0
+              2              0
+              3              0
+              4              3
+              5              7
+              6             10
+              7             16
+              8             22
+              9             27
+             10             30
+             11             35
+             12             36
+             13             33
+             14             30
+             15             24
+             16             22
+             17             13
+             18              8
+             19              4
+             20              2
+             21              0
+             22              0
+             23              0
+             24              0
+ Grid_Technique::init_atoms_on_grid2  warning : no atom on this sub FFT grid.
+                            startmag_type = 2
+                       charge from rho_at = 13
+                         charge should be = 13
+                            startmag_type = 2
+                       charge from rho_at = 16
+                         charge should be = 16
+
+ SETUP ATOMIC RHO FOR SPIN 1
+                 Electron number from rho = 90
+           total electron number from rho = 90
+                                should be = 90
+                 charge before normalized = 90
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006664068
+                  charge after normalized = 90.0000000000004
+                 charge before normalized = 89.9999999999995
+                  charge after normalized = 89.9999999999999
+                 charge before normalized = 90.0000006734297
+                  charge after normalized = 89.9999999999995
+                 charge before normalized = 90.0000000000004
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006597949
+                  charge after normalized = 90.0000000000006
+                 charge before normalized = 89.9999999999993
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006749072
+                  charge after normalized = 89.9999999999993
+                 charge before normalized = 90
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006626458
+                  charge after normalized = 90
+                 charge before normalized = 90
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006632835
+                  charge after normalized = 90.0000000000007
+                 charge before normalized = 89.9999999999995
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006657074
+                  charge after normalized = 90.0000000000005
+                 charge before normalized = 90.0000000000003
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006635221
+                  charge after normalized = 89.9999999999999
+                 charge before normalized = 89.9999999999999
+                  charge after normalized = 90
+                 charge before normalized = 90.000000664275
+                  charge after normalized = 89.9999999999997
+                 charge before normalized = 89.9999999999999
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642121
+                  charge after normalized = 90.0000000000011
+                 charge before normalized = 90.0000000000011
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642971
+                  charge after normalized = 90.0000000000001
+                 charge before normalized = 90.0000000000001
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006650831
+                  charge after normalized = 89.9999999999999
+                 charge before normalized = 90.0000000000001
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006627664
+                  charge after normalized = 89.9999999999992
+                 charge before normalized = 90.0000000000007
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006652002
+                  charge after normalized = 89.9999999999998
+                 charge before normalized = 89.9999999999997
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006638136
+                  charge after normalized = 90.0000000000006
+                 charge before normalized = 89.9999999999999
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006641866
+                  charge after normalized = 89.9999999999997
+                 charge before normalized = 89.9999999999998
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006643772
+                  charge after normalized = 90.0000000000002
+                 charge before normalized = 89.9999999999999
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642161
+                  charge after normalized = 90.0000000000002
+                 charge before normalized = 89.9999999999997
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642452
+                  charge after normalized = 89.9999999999995
+                 charge before normalized = 90.0000000000003
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642632
+                  charge after normalized = 89.9999999999995
+                 charge before normalized = 90.0000000000002
+                  charge after normalized = 90
+                 charge before normalized = 90.00000066416
+                  charge after normalized = 89.9999999999995
+                 charge before normalized = 89.9999999999993
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642463
+                  charge after normalized = 89.9999999999997
+                 charge before normalized = 89.9999999999996
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642854
+                  charge after normalized = 90.0000000000002
+                 charge before normalized = 90
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006641919
+                  charge after normalized = 89.9999999999997
+                 charge before normalized = 89.9999999999995
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642765
+                  charge after normalized = 89.9999999999998
+                 charge before normalized = 90.0000000000012
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642728
+                  charge after normalized = 90.0000000000002
+                 charge before normalized = 90.0000000000001
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006641711
+                  charge after normalized = 89.9999999999996
+                 charge before normalized = 89.9999999999999
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642753
+                  charge after normalized = 89.9999999999996
+                 charge before normalized = 90.0000000000004
+                  charge after normalized = 90
+                 charge before normalized = 90.000000664271
+                  charge after normalized = 90.0000000000005
+                 charge before normalized = 89.9999999999998
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642588
+                  charge after normalized = 89.9999999999997
+                 charge before normalized = 90.0000000000005
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006643553
+                  charge after normalized = 89.9999999999999
+                 charge before normalized = 90
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642795
+                  charge after normalized = 89.9999999999997
+                 charge before normalized = 89.9999999999994
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642341
+                  charge after normalized = 90.0000000000002
+                 charge before normalized = 89.9999999999994
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642496
+                  charge after normalized = 89.9999999999988
+                 charge before normalized = 89.9999999999997
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006643123
+                  charge after normalized = 89.9999999999993
+                 charge before normalized = 89.9999999999999
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006641947
+                  charge after normalized = 90.0000000000003
+                 charge before normalized = 90.0000000000002
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642523
+                  charge after normalized = 89.9999999999994
+                 charge before normalized = 90.0000000000003
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006643241
+                  charge after normalized = 90.0000000000002
+                 charge before normalized = 90.0000000000001
+                  charge after normalized = 90
+                 charge before normalized = 90.0000006642763
+                  charge after normalized = 90.0000000000007
+ write_dmr  warning : the output type of DMR should be npz or csr.

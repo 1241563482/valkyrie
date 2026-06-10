@@ -20,8 +20,8 @@ RECORDABLE_COMMANDS = {
     "vasp_md",
     "vasp_cohp",
     "qe_relax",
-    "qescf",
     "qe_scf",
+    "abacus_scf",
     "dmft",
 }
 

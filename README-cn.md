@@ -10,6 +10,7 @@ Valkyrie 是一个面向第一性原理计算工作流的命令行工具，主�
 
 - 生成 VASP relax、SCF、band、DOS、ELF、phonon、AIMD、COHP 等计算输入。
 - 从 `POSCAR` 生成 Quantum ESPRESSO relax / SCF 输入文件。
+- 从 `POSCAR` 生成 ABACUS SCF 的 `INPUT`、`KPT` 和 `STRU` 文件。
 - 根据内置模板生成 LSF 作业脚本。
 - 自动复制任务相关的后处理脚本到计算目录。
 - 提供计算目录清理工具。
@@ -43,6 +44,7 @@ python -m pip install -e .
 
 - VASP 可执行文件，例如 `vasp_std`、`vasp_gam`、`vasprelax`
 - Quantum ESPRESSO `pw.x`
+- ABACUS 可执行文件以及 ABACUS 赝势/轨道目录
 - `vaspkit`
 - `phonopy`
 - `lobster`
@@ -68,6 +70,7 @@ val vasp_relax -ns
 val vasp_scf -ns
 val vasp_dos -ns
 val qe_relax -ns
+val abacus_scf -ns
 ```
 
 检查生成的 `INCAR`、`KPOINTS`、`job` 等文件没有问题后，再去掉 `-ns` 提交：
@@ -100,6 +103,7 @@ val --help
 | `qe_relax` | 生成 Quantum ESPRESSO 变胞优化输入。 |
 | `qescf` | QE SCF 输入生成的旧命令别名。 |
 | `qe_scf` | 生成 Quantum ESPRESSO SCF 输入。 |
+| `abacus_scf` | 从 `POSCAR` 生成 ABACUS SCF 的 `INPUT`、`KPT`、`STRU` 和作业脚本。 |
 | `dmft` | 准备 WIEN2k/EDMFT 风格的工作流。 |
 
 ## 通用作业参数
@@ -192,14 +196,32 @@ val qe_relax -ns --optcell
 
 ### SCF
 
-新旧两个命令都可用：
-
 ```bash
 val qe_scf -ns --encut 100
-val qescf -ns --encut 100
 ```
 
-`qescf` 是为了兼容旧用法保留的别名。新的工作流建议使用 `qe_scf`。
+## ABACUS 工作流
+
+### SCF
+
+```bash
+val abacus_scf -ns
+val abacus_scf -ns -k 12 15 1
+val abacus_scf -ns --pp V=V.upf Se=Se.upf --basis V=V_gga_10au_100Ry_4s2p2d1f.orb Se=Se_gga_10au_100Ry_2s2p2d1f.orb
+```
+
+`abacus_scf` 会读取 `POSCAR`，并写出 ABACUS 的 `STRU`、`INPUT`、`KPT` 和 `job` 文件。默认情况下，它会尝试读取本地参考目录 `1/` 中的 `INPUT`、`KPT`、`STRU`，并复用其中的默认参数。命令行参数会覆盖参考目录中的设置。
+
+常用选项：
+
+- `--reference-dir`：参考 ABACUS 计算目录，默认 `1`。
+- `--pseudo-dir`：写入 `INPUT` 的 ABACUS `pseudo_dir`。
+- `--orbital-dir`：写入 `INPUT` 的 ABACUS `orbital_dir`。
+- `--pp ELEMENT=FILE ...`：写入 `STRU` 的赝势映射。
+- `--basis ELEMENT=FILE ...`：写入 `STRU` 的 LCAO 轨道映射。
+- `-k/--kpoints NX NY NZ`：写入 `KPT` 的 k 点网格。
+- `--ecutwfc`：ABACUS 截断能。
+- `--no-soc`：关闭从参考 `INPUT` 继承的 SOC / 非共线默认设置。
 
 ## 清理计算目录
 
@@ -224,6 +246,7 @@ val keep --task vasp_relax
 valkyrie/
 ├── entrypoints/       # CLI 子命令入口
 ├── input/             # 输入文件生成辅助模块
+├── abacus_ase_io.py    # 独立 ASE/ABACUS IO 辅助模块
 ├── python_scripts/    # 会复制到计算目录的后处理脚本
 ├── shell_scripts/     # job 模板和调度器辅助模块
 ├── config.py          # 集群/站点默认配置
@@ -257,7 +280,7 @@ python -m pip install -e .
 ## 注意事项和限制
 
 - 很多默认值是针对原集群环境设置的，正式使用前请检查 [valkyrie/config.py](valkyrie/config.py)。
-- 部分命令会调用外部程序，例如 `vaspkit`、`phonopy`、`bsub`、`init_lapw`，这些程序需要用户自行安装。
+- 部分命令会调用外部程序，例如 `vaspkit`、`phonopy`、`abacus`、`bsub`、`init_lapw`，这些程序需要用户自行安装。
 - 建议每次新任务先使用 `-ns/--notSub` 检查生成文件，再提交作业。
 - Valkyrie 当前定位是实用型输入/作业准备工具，不是完整通用的工作流管理系统。
 

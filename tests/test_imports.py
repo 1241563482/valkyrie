@@ -9,6 +9,8 @@ class ImportsTest(unittest.TestCase):
             "valkyrie.config",
             "valkyrie.resources",
             "valkyrie.entrypoints.main",
+            "valkyrie.abacus_ase_io",
+            "valkyrie.entrypoints.abacus_scf",
             "valkyrie.entrypoints.qe_scf",
             "valkyrie.entrypoints.dmft",
             "valkyrie.shell_scripts.job",

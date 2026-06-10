@@ -132,7 +132,7 @@ def detect_engine(path):
         command = latest.get("command", "")
         if command.startswith("vasp"):
             return "vasp"
-        if command.startswith("qe") or command == "qescf":
+        if command.startswith("qe"):
             return "qe"
     return "unknown"
 
